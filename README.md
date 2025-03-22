@@ -1,6 +1,6 @@
 # Auto Customs Calculator Bot
 
-This Telegram bot helps you calculate customs duty and additional expenses for imported cars. It pulls car data from sources like Copart and Av.by, and stores price information in a PostgreSQL database. The bot offers both basic and special calculation modes and includes functionality to update the database with fresh data.
+This Telegram bot helps you calculate customs duty and additional expenses for imported cars. It pulls car data from sources like Copart, Iaai and Av.by, and stores price information in a PostgreSQL database. The bot offers both basic and special calculation modes and includes functionality to update the database with fresh data.
 
 ## Features
 
