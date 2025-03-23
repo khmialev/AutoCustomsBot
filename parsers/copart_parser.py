@@ -28,6 +28,8 @@ class CopartParser(BasicParser):
             model = model.lower().replace("class", "klass").replace(" ", "")
         if "series" in model.lower():
             model = model.lower().replace("series", "seriya").replace(" ", "-")
+        if "glc" in model.lower():
+            model = model.lower().replace("-klass", "")
 
         return AuctionCar(
             brand=brand,
