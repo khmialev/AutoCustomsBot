@@ -7,7 +7,7 @@ from aiogram.types import Message
 
 from parsers.copart_parser import CopartParser
 from calculation.car_calculator import CalculateLogic
-from models.cars import CopartCar, CalculateCar
+from models.cars import CalculateCar, AuctionCar
 from models.fsm_states import CopartCalcStates
 
 
@@ -60,7 +60,7 @@ class CopartUrlCalculator:
         car = CopartParser(copart_url=url)
 
         for _ in range(5):
-            copart_car: CopartCar = await car.get_data()
+            copart_car: AuctionCar = await car.get_data()
             if not copart_car:
                 await car.close_session()
                 await message.answer(
@@ -85,10 +85,15 @@ class CopartUrlCalculator:
             )
 
             text = await self.bot.get_text(
-                copart_car=copart_car, car_calculate=car_calculate
+                web_car=copart_car, car_calculate=car_calculate
             )
 
-            await message.answer(text, parse_mode="HTML")
+            if copart_car.image:
+                await message.answer_photo(
+                    photo=copart_car.image, caption=text, parse_mode="HTML"
+                )
+            else:
+                await message.answer(text, parse_mode="HTML")
 
             break
         if not copart_car:
