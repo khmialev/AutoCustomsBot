@@ -39,15 +39,10 @@ class CalculateCar(BaseModel):
         return (self.big_car_tax * self.euro_usd) / 2 + self.fixed_costs()
 
 
-class CopartCar(BaseModel):
+class AuctionCar(BaseModel):
     brand: str
     model: str
     year: int
-    engine: float
-
-
-class IaaiCar(BaseModel):
-    brand: str
-    model: str
-    year: int
-    engine: float
+    engine: float | None = None
+    url: str | None = None
+    image: str | None = None
