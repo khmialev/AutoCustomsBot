@@ -11,7 +11,7 @@ from Logger import MyLogger
 from config import TOKEN, EURO_USD, brands
 from database.database_service import DataBaseService
 from database.db_models import Car
-from models.cars import CopartCar, CalculateCar
+from models.cars import CalculateCar, AuctionCar
 
 
 class BaseBot:
@@ -99,14 +99,10 @@ class BaseBot:
 
         return keyboard
 
-    async def get_text(self, web_car: CopartCar, car_calculate: CalculateCar):
-        web_car.model = web_car.model.lower()
-        if "class" in web_car.model:
-            web_car.model = web_car.model.replace("class", "klass").replace(" ", "")
-        if "series" in web_car.model:
-            web_car.model = web_car.model.replace("series", "seriya").replace(" ", "-")
+    async def get_text(self, web_car: AuctionCar, car_calculate: CalculateCar):
+
         car: list[Car] | Car = await self.db.get_car_price(
-            brand=web_car.brand.lower(),
+            brand=web_car.brand,
             model=web_car.model,
             year=web_car.year,
         )
@@ -119,6 +115,7 @@ class BaseBot:
         # Собираем сообщение
         text = (
             f"🚗 <b>Автомобиль</b>\n"
+            f"• Источник данных (URL): <b>{web_car.url}</b>\n"
             f"• Бренд: <b>{web_car.brand}</b>\n"
             f"• Модель: <b>{web_car.model}</b>\n"
             f"• Год: <b>{web_car.year}</b>\n\n"
