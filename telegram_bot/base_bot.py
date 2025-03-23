@@ -113,9 +113,12 @@ class BaseBot:
         discounted_big_total = car_calculate.discounted_big_total()
 
         # Собираем сообщение
-        text = (
-            f"🚗 <b>Автомобиль</b>\n"
-            f"• Источник данных (URL): <b>{web_car.url}</b>\n"
+        text = f"🚗 <b>Автомобиль</b>\n"
+
+        if web_car.url:
+            text += f"• Источник данных (URL): <b>{web_car.url}</b>\n"
+
+        text += (
             f"• Бренд: <b>{web_car.brand}</b>\n"
             f"• Модель: <b>{web_car.model}</b>\n"
             f"• Год: <b>{web_car.year}</b>\n\n"
