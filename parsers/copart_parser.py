@@ -1,6 +1,6 @@
+from models.cars import AuctionCar
 from parsers.base_parser import BasicParser
 from config import COPART_URL
-from models.cars import CopartCar
 
 
 class CopartParser(BasicParser):
@@ -18,8 +18,22 @@ class CopartParser(BasicParser):
         brand = car_data["data"]["lotDetails"]["mkn"]
         model = car_data["data"]["lotDetails"]["lmg"]
         year = car_data["data"]["lotDetails"]["lcy"]
+        image = car_data["data"]["lotDetails"]["tims"]
         engine = float(
             car_data["data"]["lotDetails"]["egn"].split(" ")[0].replace("L", "").strip()
         )
         await self.close_session()
-        return CopartCar(brand=brand, model=model, year=year, engine=engine)
+
+        if "class" in model.lower():
+            model = model.lower().replace("class", "klass").replace(" ", "")
+        if "series" in model.lower():
+            model = model.lower().replace("series", "seriya").replace(" ", "-")
+
+        return AuctionCar(
+            brand=brand,
+            model=model,
+            year=year,
+            engine=engine,
+            url=self.url,
+            image=image,
+        )
