@@ -118,7 +118,8 @@ class BasicParser:
                 copart_url, ssl=False, headers=self.copart_headers, cookies=cookies
             ) as response:
                 return await response.json()
-        except:
+        except Exception as e:
+            self.logger.warning(e)
             return False
 
     async def get_iaai_json(self, iaai_url: str):
@@ -128,20 +129,20 @@ class BasicParser:
                 ssl=False,
             ) as response:
                 return await response.json()
-        except:
+        except Exception as e:
+            self.logger.warning(e)
             return False
 
     async def get_iaai_engine(self, iaai_url: str):
+        # надо мб прокси или через селениум но там капча
         try:
-            async with self._session.get(
-                iaai_url,
-                ssl=False,
-            ) as response:
+            async with self._session.get(iaai_url, ssl=False) as response:
                 html = await response.text()
                 soup = BeautifulSoup(html, "lxml")
                 engine = soup.find("span", {"id": "ingine_image"}).text.strip()
                 return engine
-        except:
+        except Exception as e:
+            self.logger.warning(e)
             return False
 
     async def close_session(self):
