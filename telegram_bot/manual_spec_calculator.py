@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from calculation.car_calculator import CalculateLogic
-from models.cars import CalculateCar, CopartCar
+from models.cars import CalculateCar, AuctionCar
 from models.fsm_states import ManualSpecCalcStates
 
 
@@ -107,12 +107,10 @@ class ManualSpecCalculator:
             car_manufacture_year=year, engine_volume=engine_value
         )
 
-        copart_car: CopartCar = CopartCar(
+        car: AuctionCar = AuctionCar(
             brand=brand.lower(), model=model, year=year, engine=engine_value
         )
 
-        text = await self.bot.get_text(
-            copart_car=copart_car, car_calculate=car_calculate
-        )
+        text = await self.bot.get_text(web_car=car, car_calculate=car_calculate)
         await message.answer(text, parse_mode="HTML")
         await state.clear()
