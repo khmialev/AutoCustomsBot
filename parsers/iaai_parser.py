@@ -1,5 +1,5 @@
 from config import IAAI_URL
-from models.cars import IaaiCar
+from models.cars import AuctionCar
 from parsers.base_parser import BasicParser
 
 
@@ -18,6 +18,9 @@ class IaaiParser(BasicParser):
         brand = car_data["MakeName"]
         model = car_data["ModelName"]
         year = car_data["ModelYear"]
+        salvage_id = car_data["SalvageId"]
+        branch_number = car_data["AdministrativeBranchNumber"]
+        image_url = f"https://vis.iaai.com/resizer?imageKeys={salvage_id}~SID~B{branch_number}~S0~I1~RW2576~H1932~TH0&width=845&height=633"
         dirty_engine = await self.get_iaai_engine(iaai_url=self.url)
         if not dirty_engine:
             return False
@@ -27,4 +30,11 @@ class IaaiParser(BasicParser):
             model: str = f"{model[0]}-seriya"
 
         await self.close_session()
-        return IaaiCar(brand=brand, model=model, year=year, engine=engine)
+        return AuctionCar(
+            brand=brand,
+            model=model,
+            year=year,
+            engine=engine,
+            url=self.url,
+            image=image_url,
+        )
