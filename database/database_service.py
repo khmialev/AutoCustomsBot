@@ -35,8 +35,8 @@ class DataBaseService(DataBaseConnection):
         async for session in self.get_session:
             stmt = (
                 select(Car)
-                .where(Car.brand == brand)
-                .where(Car.model == model)
+                .where(Car.brand == brand.lower())
+                .where(Car.model == model.lower())
                 # year_from включительно
                 .where(Car.year_from <= year)
                 # year_to НЕ включительно
