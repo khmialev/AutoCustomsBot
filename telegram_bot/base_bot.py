@@ -119,8 +119,8 @@ class BaseBot:
             text += f"• Источник данных (URL): <b>{web_car.url}</b>\n"
 
         text += (
-            f"• Бренд: <b>{web_car.brand}</b>\n"
-            f"• Модель: <b>{web_car.model}</b>\n"
+            f"• Бренд: <b>{web_car.brand.upper()}</b>\n"
+            f"• Модель: <b>{web_car.model.upper()}</b>\n"
             f"• Год: <b>{web_car.year}</b>\n\n"
             f"🔧 <b>Характеристики</b>\n"
             f"• Объем двигателя: <b>{web_car.engine}</b> см³\n\n"
@@ -135,8 +135,8 @@ class BaseBot:
         if car_calculate.car_tax is not None:
             text += (
                 f"💰 <b>Обычная пошлина</b>\n"
-                f"• Без льготы: <b>{round(car_calculate.car_tax * self.euro_usd, 2)} $</b>\n"
-                f"• С учетом льготы: <b>{round((car_calculate.car_tax * self.euro_usd) / 2, 2)} $</b>\n"
+                f"• Без льготы: <b>{car_calculate.car_tax * self.euro_usd} $</b>\n"
+                f"• С учетом льготы: <b>{(car_calculate.car_tax * self.euro_usd) / 2} $</b>\n"
             )
             if common_total is not None:
                 text += (
