@@ -20,6 +20,7 @@ class AVParser(BasicParser):
         await self.get_session()
         await self.get_models()
         await self.close_session()
+        return True
 
     async def get_models(self):
         brand = await self.get_json(data=self.brand)
