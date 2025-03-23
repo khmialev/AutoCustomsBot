@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from calculation.car_calculator import CalculateLogic
-from models.cars import CalculateCar, IaaiCar
+from models.cars import CalculateCar, AuctionCar
 from models.fsm_states import IaaiCalcStates
 from parsers.iaai_parser import IaaiParser
 
@@ -57,7 +57,7 @@ class IaaiUrlCalculator:
         car = IaaiParser(iaai_url=url)
 
         for _ in range(5):
-            iaai_car: IaaiCar = await car.get_data()
+            iaai_car: AuctionCar = await car.get_data()
             if not iaai_car:
                 await car.close_session()
                 await message.answer(
@@ -84,8 +84,12 @@ class IaaiUrlCalculator:
             text = await self.bot.get_text(
                 web_car=iaai_car, car_calculate=car_calculate
             )
-
-            await message.answer(text, parse_mode="HTML")
+            if iaai_car.image:
+                await message.answer_photo(
+                    photo=iaai_car.image, caption=text, parse_mode="HTML"
+                )
+            else:
+                await message.answer(text, parse_mode="HTML")
 
             break
         if not iaai_car:
