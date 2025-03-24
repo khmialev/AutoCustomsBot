@@ -37,7 +37,3 @@ class BrandsParser:
         await self.get_driver()
         button = self.driver.find_element(By.CLASS_NAME, "button__text")
         button.click()
-
-
-a = BrandsParser()
-asyncio.run(a.start_pars())
