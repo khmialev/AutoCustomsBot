@@ -10,6 +10,8 @@ class CopartParser(BasicParser):
 
     async def get_data(self):
         await self.get_session()
+        if "ru" in self.url:
+            self.url = self.url.replace("ru/", "")
         car_code = self.url.split("/")[4]
         copart_url = f"{COPART_URL}{car_code}"
         car_data = await self.get_copart_json(copart_url=copart_url, referer=self.url)
@@ -30,6 +32,8 @@ class CopartParser(BasicParser):
             model = model.lower().replace("series", "seriya").replace(" ", "-")
         if "glc" in model.lower():
             model = model.lower().replace("-klass", "")
+        if "clc" in model.lower():
+            model = model.lower().replace("clc-klass", "cls")
 
         return AuctionCar(
             brand=brand,
