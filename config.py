@@ -30,6 +30,13 @@ IAAI_URL = os.getenv("IAAI_URL")
 EURO_USD = os.getenv("EURO_USD")
 TOKEN = os.getenv("TOKEN")
 
+PROXY_HOST = os.getenv("PROXY_HOST")
+PROXY_PORT = os.getenv("PROXY_PORT")
+PROXY_USER = os.getenv("PROXY_USER")
+PROXY_PASS = os.getenv("PROXY_PASS")
+
+PROXY_URL = f"https://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
+
 brands = [
     "Acura",
     "Alfa-Romeo",
