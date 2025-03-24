@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
+from config import NOT_GENERATION_URL
 from parsers.base_parser import BasicParser
 from database.database_service import DataBaseService
 
@@ -13,6 +14,7 @@ class AVParser(BasicParser):
         self.model_id: Optional[int] = None
         self.generation_id: Optional[int] = None
         self.stop_update: bool = False
+        self.not_generation_url = NOT_GENERATION_URL
 
     async def run_parser(self, brand: str):
         self.brand = brand.lower()
@@ -32,6 +34,10 @@ class AVParser(BasicParser):
 
     async def get_generation(self, model: str):
         generations = await self.get_json(data=model)
+        if not generations["seo"]["links"]:
+            url = generations["initialValue"]
+            await self.not_generation(url=url, data=generations)
+
         for generation in generations["seo"]["links"]:
             if self.stop_update:
                 return
@@ -39,7 +45,7 @@ class AVParser(BasicParser):
             data = "/".join(generation["url"].split("/")[3:])
             await self.get_low_price(generation=data, years=years)
 
-    async def get_low_price(self, generation: str, years: str):
+    async def get_low_price(self, generation: str, years: str | None):
         current_curse = await self.get_current_curse()
         data = await self.get_json(data=generation)
         price_min = (
@@ -94,3 +100,41 @@ class AVParser(BasicParser):
             prices.extend(cost)
         average = sum(prices) / len(prices)
         return average, len(prices)
+
+    async def not_generation(self, url: str, data: dict):
+        current_curse = await self.get_current_curse()
+        cars = await self.get_not_generation_json(self.not_generation_url + url)
+
+        price_min = (
+            float(data["seo"]["microMarkup"]["offers"]["lowPrice"]) / current_curse
+        )
+        price_max = (
+            float(data["seo"]["microMarkup"]["offers"]["highPrice"]) / current_curse
+        )
+        brand = data["metadata"]["brandSlug"]
+        model = data["metadata"]["modelSlug"]
+        generation = "without generation"
+
+        years_from = cars["adverts"][0]["metadata"]["year"]
+        years_to = cars["adverts"][-1]["metadata"]["year"]
+
+        cost = [cost["price"]["usd"]["amount"] for cost in cars["adverts"]]
+        average_price = sum(cost) / len(cost)
+
+        car_data = {
+            "brand": str(brand).lower(),
+            "model": str(model).lower(),
+            "generation": str(generation),
+            "year_from": int(years_from),
+            "year_to": int(years_to),
+            "price_min": float(price_min),
+            "price_max": float(price_max),
+            "average_price": float(average_price),
+            "count_cars": int(len(cars)),
+            "updated_at": datetime.now(),
+        }
+        await self._db.save_car_data(car_data=car_data)
+        self.logger.info(
+            f"Record successfully added to the database: {brand.upper()} {model} "
+            f"(Production Years: {years_from} – {years_to})"
+        )
