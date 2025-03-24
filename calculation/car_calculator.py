@@ -43,9 +43,10 @@ class CalculateLogic(BasicCalculate):
         if car_age < 3:
             # Здесь вызываем функцию для авто до 3 лет
             car_tax = await self.before_three_years(engine_volume, car_price)
+            big_car_tax = await self.between_three_five_years(engine_volume)
             return CalculateCar(
                 car_tax=car_tax,
-                big_car_tax=None,
+                big_car_tax=big_car_tax if car_age == 2 else None,
                 auction_tax=self.auction_tax,
                 auction_button=self.auction_button,
                 delivery=self.delivery,
