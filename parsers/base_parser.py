@@ -4,7 +4,7 @@ from fake_useragent import UserAgent
 
 import Logger
 from Logger import MyLogger
-from config import BASE_URL, USD_URL
+from config import BASE_URL, USD_URL, PROXY_URL
 
 
 class BasicParser:
@@ -106,7 +106,7 @@ class BasicParser:
 
         return results
 
-    async def get_copart_json(self, copart_url: str, referer: str):
+    async def get_copart_json(self, copart_url: str, referer: str, proxy: bool):
         async with self._session.get(
             "https://www.copart.com/", ssl=False, headers=self.copart_headers
         ) as response:
@@ -115,7 +115,11 @@ class BasicParser:
         self.copart_headers["referer"] = referer
         try:
             async with self._session.get(
-                copart_url, ssl=False, headers=self.copart_headers, cookies=cookies
+                copart_url,
+                ssl=False,
+                headers=self.copart_headers,
+                cookies=cookies,
+                proxy=PROXY_URL if proxy else None,
             ) as response:
                 return await response.json()
         except Exception as e:
