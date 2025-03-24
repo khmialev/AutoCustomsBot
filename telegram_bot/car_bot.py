@@ -1,9 +1,12 @@
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 from aiogram.types import (
     Message,
 )
 from aiogram import F
 
+from calculation.car_calculator import CalculateLogic
+from models.cars import CalculateCar
 from parsers.av_parser import AVParser
 from telegram_bot.base_bot import BaseBot
 from telegram_bot.copart_url_calculator import CopartUrlCalculator
@@ -43,7 +46,7 @@ class CarBot(BaseBot):
                 f"Привет, <b>{message.from_user.username}</b>! ✌️\n\n"
                 f"Выбери команду из меню ниже или введи её вручную:"
             ),
-            reply_markup=await self._create_reply_keyboard(),
+            reply_markup=await self._create_main_keyboard(),
             parse_mode="HTML",
         )
 
@@ -55,3 +58,41 @@ class CarBot(BaseBot):
             parse_mode="HTML",
         )
         # удалить клаву
+
+    async def process_final_car_data(
+        self,
+        message: Message,
+        auction_car,
+        state: FSMContext,
+        estimated_price: float = None,
+    ):
+        """
+        Общая логика для:
+         - расчёта таможенной пошлины
+         - формирования текста ответа
+         - отправки фото/сообщения в чат
+
+        Параметры:
+          auction_car  – объект AuctionCar, полученный от парсера
+          car_price   – цена (если машина младше 3 лет); может быть None, если машина 3+ года
+        """
+
+        car_calculate: CalculateCar = await CalculateLogic().calculate(
+            car_manufacture_year=auction_car.year,
+            engine_volume=auction_car.engine,
+            car_price=estimated_price,
+        )
+
+        text = await self.get_text(
+            web_car=auction_car,
+            car_calculate=car_calculate,
+            estimated_price=estimated_price,
+        )
+
+        if auction_car.image:
+            await message.answer_photo(
+                photo=auction_car.image, caption=text, parse_mode="HTML"
+            )
+        else:
+            await message.answer(text, parse_mode="HTML")
+        await state.clear()
