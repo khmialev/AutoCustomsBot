@@ -64,6 +64,7 @@ class CopartUrlCalculator:
         for _ in range(5):
             copart_car: AuctionCar = await car.get_data()
             if not copart_car:
+                car.use_proxy = True
                 await car.close_session()
                 await message.answer(
                     "🔴 Нет ответа от Copart. Жду 10 секунд и пробую ещё...",
