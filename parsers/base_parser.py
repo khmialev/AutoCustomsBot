@@ -61,6 +61,12 @@ class BasicParser:
         ) as response:
             return await response.json()
 
+    async def get_not_generation_json(self, url: str):
+        async with self._session.get(
+            url, ssl=False, headers=self.av_headers
+        ) as response:
+            return await response.json()
+
     async def get_cars(self, brand_id: int, model_id: int, generation_id: int):
         results = []
         page = 1
