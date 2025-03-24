@@ -26,7 +26,7 @@ class BaseBot:
         self.car_models: list[Car] = []
 
     async def _create_models_keyboards(self):
-        """ Кнопки для выбора модели авто """
+        """Кнопки для выбора модели авто"""
 
         buttons = []
         for model in self.car_models:
@@ -41,7 +41,7 @@ class BaseBot:
         return InlineKeyboardMarkup(inline_keyboard=buttons)
 
     async def _create_brands_keyboard(self, spec=False):
-        """ Кнопки для выбора бренда авто """
+        """Кнопки для выбора бренда авто"""
 
         buttons = []
         for brand in self.car_brands:
@@ -56,7 +56,7 @@ class BaseBot:
         return InlineKeyboardMarkup(inline_keyboard=buttons)
 
     async def _calculation_for_data(self):
-        """ Меню для выбора типа расчета """
+        """Меню для выбора типа расчета"""
         buttons = [
             [
                 InlineKeyboardButton(
@@ -94,7 +94,7 @@ class BaseBot:
         return InlineKeyboardMarkup(inline_keyboard=buttons)
 
     async def _create_main_keyboard(self):
-        """ Главное меню """
+        """Главное меню"""
         buttons = [
             ["Расчет по ссылке с copart", "Расчет по ссылке с iaai"],
             ["Обновить БД с ценами (av.by)", "Расчет по данным"],
