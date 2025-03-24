@@ -148,7 +148,7 @@ class BaseBot:
         )
 
         if estimated_price:
-            text += f"• <b>Предполагаемая стоимость покупки авто: <b>{estimated_price} $</b>\n\n"
+            text += f"• <b>Предполагаемая стоимость покупки авто: {estimated_price} $</b>\n\n"
 
         # Добавим информацию об обычной пошлине, если она есть
         if car_calculate.car_tax is not None:
