@@ -153,7 +153,7 @@ class BaseBot:
         # Добавим информацию об обычной пошлине, если она есть
         if car_calculate.car_tax is not None:
             text += (
-                f"💰 <b>{'Пошлина на авто 3–5 лет' if not estimated_price else "Пошлина на авто ДО 3 лет"}</b>\n"
+                f"💵 <b>{'Пошлина на авто 3-5 лет' if not estimated_price else 'Пошлина на авто ДО 3 лет'}</b>\n"
                 f"• Без льготы: <b>{car_calculate.car_tax * self.euro_usd} $</b>\n"
                 f"• С учетом льготы: <b>{(car_calculate.car_tax * self.euro_usd) / 2} $</b>\n"
             )
@@ -166,7 +166,7 @@ class BaseBot:
         # Добавим информацию о большой пошлине, если она есть
         if car_calculate.big_car_tax is not None:
             text += (
-                f"💰 <b>{'Пошлина на авто СТАРШЕ 5 лет' if not estimated_price else "Пошлина на авто 3–5 лет"}</b>\n"
+                f"💵 <b>{'Пошлина на авто СТАРШЕ 5 лет' if not estimated_price else 'Пошлина на авто 3-5 лет'}</b>\n"
                 f"• Без льготы: <b>{round(car_calculate.big_car_tax * self.euro_usd, 2)} $</b>\n"
                 f"• С учетом льготы: <b>{round((car_calculate.big_car_tax * self.euro_usd) / 2)} $</b>\n"
             )
