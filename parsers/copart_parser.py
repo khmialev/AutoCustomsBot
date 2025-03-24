@@ -7,6 +7,7 @@ class CopartParser(BasicParser):
     def __init__(self, copart_url: str):
         super().__init__()
         self.url = copart_url
+        self.use_proxy: bool = False
 
     async def get_data(self):
         await self.get_session()
@@ -14,7 +15,9 @@ class CopartParser(BasicParser):
             self.url = self.url.replace("ru/", "")
         car_code = self.url.split("/")[4]
         copart_url = f"{COPART_URL}{car_code}"
-        car_data = await self.get_copart_json(copart_url=copart_url, referer=self.url)
+        car_data = await self.get_copart_json(
+            copart_url=copart_url, referer=self.url, proxy=self.use_proxy
+        )
         if not car_data:
             return False
         brand = car_data["data"]["lotDetails"]["mkn"]
@@ -33,7 +36,9 @@ class CopartParser(BasicParser):
         if "glc" in model.lower():
             model = model.lower().replace("-klass", "")
         if "clc" in model.lower():
-            model = model.lower().replace("clc-klass", "cls")
+            model = "clc"
+        if "gle" in model.lower():
+            model = "gle"
 
         return AuctionCar(
             brand=brand,
