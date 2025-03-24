@@ -32,7 +32,7 @@ class UpdateDBHandler:
             text=(
                 "Хорошо! Теперь выбери действие для обновления базы данных с ценами:"
             ),
-            reply_markup=await self.bot._create_main_keyboard(),
+            reply_markup=await self.bot._create_main_keyboard_for_udate_db(),
             parse_mode="HTML",
         )
 
