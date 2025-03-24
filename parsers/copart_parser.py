@@ -39,6 +39,8 @@ class CopartParser(BasicParser):
             model = "clc"
         if "gle" in model.lower():
             model = "gle"
+        if "glb" in model.lower():
+            model = "glb"
 
         return AuctionCar(
             brand=brand,
