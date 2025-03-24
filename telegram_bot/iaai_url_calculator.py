@@ -58,34 +58,43 @@ class IaaiUrlCalculator:
             parse_mode="HTML",
         )
         car = IaaiParser(iaai_url=url)
+        iaai_car = None
 
         for _ in range(5):
             iaai_car: AuctionCar = await car.get_data()
             if not iaai_car:
                 await car.close_session()
                 await message.answer(
-                    "🔴 Нет ответа от Iaai. Жду 10 секунд и пробую ещё...",
+                    "🔴 Нет ответа от Copart. Жду 10 секунд и пробую ещё...",
                     parse_mode="HTML",
                 )
                 await asyncio.sleep(10)
                 continue
-
-            await state.update_data(iaai_car=iaai_car)
-            year = datetime.datetime.now().year
-            if year - iaai_car.year < 3:
-                await message.answer(
-                    "⚠️ <b>Без стоимости авто нельзя рассчитать таможенную пошлину</b>.\n"
-                    "Для машин младше 3 лет пошлина идёт как % от цены.\n\n"
-                    "Пожалуйста, введите предполагаемую стоимость авто (в $):",
-                    parse_mode="HTML",
-                )
-                await state.set_state(IaaiCalcStates.waiting_for_price_under_3_years)
-
-            else:
-                await self.bot.process_final_car_data(
-                    message=message, auction_car=iaai_car, state=state
-                )
             break
+
+        if not iaai_car:
+            await message.answer(
+                "❌ <b>Сервер так и не ответил.</b>\nПопробуйте позже.",
+                parse_mode="HTML",
+            )
+            await state.clear()
+            return
+
+        await state.update_data(iaai_car=iaai_car)
+        year = datetime.datetime.now().year
+        if year - iaai_car.year < 3:
+            await message.answer(
+                "⚠️ <b>Без стоимости авто нельзя рассчитать таможенную пошлину</b>.\n"
+                "Для машин младше 3 лет пошлина идёт как % от цены.\n\n"
+                "Пожалуйста, введите предполагаемую стоимость авто (в $):",
+                parse_mode="HTML",
+            )
+            await state.set_state(IaaiCalcStates.waiting_for_price_under_3_years)
+
+        else:
+            await self.bot.process_final_car_data(
+                message=message, auction_car=iaai_car, state=state
+            )
 
     async def process_car_price_for_under_3_years(
         self, message: Message, state: FSMContext
