@@ -48,5 +48,7 @@ class AuctionCar(BaseModel):
     buy_now: int | None = None
     current_bid: int | None = None
     sales_status: str | None = None
+    main_damage: str | None = None
+    secondary_damage: str | None = None
     image: str | None = None
     images: list[str] = None
