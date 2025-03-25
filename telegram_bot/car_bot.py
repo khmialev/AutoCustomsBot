@@ -98,7 +98,7 @@ class CarBot(BaseBot):
                     media=auction_car.images[0], caption=text, parse_mode="HTML"
                 )
             )
-            for url in auction_car.images[1:]:
+            for url in auction_car.images[1:10]:
                 media.append(InputMediaPhoto(media=url))
             await message.answer_media_group(media)
 
