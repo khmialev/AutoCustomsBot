@@ -6,12 +6,13 @@ from fake_useragent import UserAgent
 
 import Logger
 from Logger import MyLogger
-from config import BASE_URL, USD_URL, PROXY_URL
+from config import BASE_URL, USD_URL, PROXY_URL, COPART_LOT_IMAGES_URL
 
 
 class BasicParser:
     base_url = BASE_URL
     ua = UserAgent().random
+    copart_lot_images_url = COPART_LOT_IMAGES_URL
 
     av_headers = {
         "accept": "*/*",
@@ -113,6 +114,31 @@ class BasicParser:
             page += 1
 
         return results
+
+    async def get_copart_lot_images(self, lot_id, referer: str, proxy: bool):
+        async with self._session.get(
+            "https://www.copart.com/", ssl=False, headers=self.copart_headers
+        ) as response:
+            cookies = response.cookies
+
+        json_data = {
+            "lotNumber": lot_id,
+        }
+
+        self.copart_headers["referer"] = referer
+        try:
+            async with self._session.post(
+                url=self.copart_lot_images_url,
+                ssl=False,
+                headers=self.copart_headers,
+                cookies=cookies,
+                proxy=PROXY_URL if proxy else None,
+                json=json_data,
+            ) as response:
+                return await response.json()
+        except Exception as e:
+            self.logger.warning(e)
+            return False
 
     async def get_copart_json(self, copart_url: str, referer: str, proxy: bool):
         async with self._session.get(
