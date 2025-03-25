@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram import Bot, Dispatcher
 from aiogram.types import (
     InlineKeyboardButton,
@@ -113,7 +115,6 @@ class BaseBot:
         car_calculate: CalculateCar,
         estimated_price: float = None,
     ):
-
         car: list[Car] | Car = await self.db.get_car_price(
             brand=web_car.brand,
             model=web_car.model,
@@ -126,21 +127,28 @@ class BaseBot:
         discounted_big_total = car_calculate.discounted_big_total()
 
         # Собираем сообщение
-        text = f"🚗 <b>Автомобиль</b>\n"
+        text = ""
 
         if web_car.url:
-            text += f"• Источник данных (URL): <b>{web_car.url}</b>\n"
+            text += f" <b>Источник данных (URL): {web_car.url}</b>\n\n"
 
         text += (
+            f"🚗 <b>Автомобиль</b>\n"
             f"• Бренд: <b>{web_car.brand.upper()}</b>\n"
             f"• Модель: <b>{web_car.model.upper()}</b>\n"
-            f"• Год: <b>{web_car.year}</b>\n\n"
-            f"🔧 <b>Характеристики</b>\n"
+            f"• Год: <b>{web_car.year}</b>\n"
             f"• Объем двигателя: <b>{web_car.engine}</b> см³\n\n"
+            f"• <b>Данные по аукциону</b>\n"
+        )
+        if web_car.buy_now:
+            text += f"• Купить сейчас : <b>{web_car.buy_now}</b> $\n"
+        text += (
+            f"• Текущая ставка ({datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}): <b>{web_car.current_bid}</b> $\n"
+            f"• Статус продажи: <b>{web_car.sales_status}</b>\n\n"
         )
 
         text += (
-            f"🚚 <b>Дополнительные расходы</b>\n"
+            f"🚚 <b>Расходы</b>\n"
             f"• Доставка: <b>{car_calculate.delivery} $</b>\n"
             f"• Комиссия аукциона: <b>{car_calculate.auction_tax} $</b>\n"
             f"• Декларанты: <b>{car_calculate.declorants} $</b>\n"
@@ -150,28 +158,30 @@ class BaseBot:
         if estimated_price:
             text += f"• <b>Предполагаемая стоимость покупки авто: {estimated_price} $</b>\n\n"
 
-        # Добавим информацию об обычной пошлине, если она есть
+        # Добавим информацию об обычной пошлине
         if car_calculate.car_tax is not None:
             text += (
                 f"💵 <b>{'Пошлина на авто 3-5 лет' if not estimated_price else 'Пошлина на авто ДО 3 лет'}</b>\n"
-                f"• Без льготы: <b>{car_calculate.car_tax * self.euro_usd} $</b>\n"
-                f"• С учетом льготы: <b>{(car_calculate.car_tax * self.euro_usd) / 2} $</b>\n"
+                f"• Без льготы: <b>{car_calculate.car_tax * self.euro_usd:.2f} $</b>\n"
+                f"• С учетом льготы: <b>{(car_calculate.car_tax * self.euro_usd) / 2:.2f} $</b>\n"
             )
             if common_total is not None:
                 text += (
+                    f" <b>-------------------------------------------</b>\n"
                     f"• Итог (без льготы): <b>{common_total} $</b>\n"
                     f"• Итог (с льготой): <b>{discounted_common_total} $</b>\n\n"
                 )
 
-        # Добавим информацию о большой пошлине, если она есть
+        # Добавим информацию о большой пошлине
         if car_calculate.big_car_tax is not None:
             text += (
                 f"💵 <b>{'Пошлина на авто СТАРШЕ 5 лет' if not estimated_price else 'Пошлина на авто 3-5 лет'}</b>\n"
-                f"• Без льготы: <b>{round(car_calculate.big_car_tax * self.euro_usd, 2)} $</b>\n"
-                f"• С учетом льготы: <b>{round((car_calculate.big_car_tax * self.euro_usd) / 2)} $</b>\n"
+                f"• Без льготы: <b>{car_calculate.big_car_tax * self.euro_usd:.2f} $</b>\n"
+                f"• С учетом льготы: <b>{(car_calculate.big_car_tax * self.euro_usd) / 2:.2f} $</b>\n"
             )
             if big_total is not None:
                 text += (
+                    f" <b>-------------------------------------------</b>\n"
                     f"• Итог (без льготы): <b>{big_total} $</b>\n"
                     f"• Итог (с льготой): <b>{discounted_big_total} $</b>\n\n"
                 )
@@ -180,11 +190,11 @@ class BaseBot:
             text += (
                 "⚠️ <b>Внимание</b>\n"
                 "Нужно <b>уточнить</b>, в каком месяце авто выпущено. "
-                "Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».\n\n"
+                "Возможно, пока автомобиль будет в пути, оно попадёт в категорию «3–5 лет».\n\n"
             )
 
+        # Блок по ситуации, когда car не найден
         if car is None:
-            # Вообще ничего не нашли
             text += (
                 "❌ <b>Нет информации в базе</b> "
                 f"по этой комбинации (Бренд: {web_car.brand.upper()}, модель: {web_car.model}, год выпуска: {web_car.year}).\n\n"
@@ -210,12 +220,10 @@ class BaseBot:
                 "Я не могу выбрать автоматически.\n\n"
             )
         else:
-            # Это ровно один объект Car (ваш текущий код)
-            # Выводим информацию о car (price_min, average_price, etc.)
             text += (
                 f"• Первая цена в РБ: <b>{car.price_min} $</b>\n"
                 f"• Средняя цена в РБ: <b>{car.average_price} $</b>\n\n"
-                f"• Количество машин в продаже: <b>{car.count_cars} </b>\n\n"
+                f"• Количество машин в продаже: <b>{car.count_cars}</b>\n\n"
             )
 
         return text
