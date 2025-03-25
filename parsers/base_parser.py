@@ -1,3 +1,5 @@
+import asyncio
+
 import aiohttp
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -67,9 +69,10 @@ class BasicParser:
         ) as response:
             return await response.json()
 
-    async def get_cars(self, brand_id: int, model_id: int, generation_id: int):
-        results = []
+    async def get_cars(self, brand_id: int, model_id: int, generation_id: int | None):
+        generation = {"name": "generation", "value": generation_id}
         page = 1
+        results = []
 
         while True:
             json_data = {
@@ -82,7 +85,6 @@ class BasicParser:
                             [
                                 {"name": "brand", "value": brand_id},
                                 {"name": "model", "value": model_id},
-                                {"name": "generation", "value": generation_id},
                             ],
                         ],
                     },
@@ -92,6 +94,8 @@ class BasicParser:
                 ],
                 "sorting": 1,
             }
+            if generation_id:
+                json_data["properties"][0]["value"][0].append(generation)
 
             async with self._session.post(
                 "https://api.av.by/offer-types/cars/filters/main/apply",
@@ -99,12 +103,10 @@ class BasicParser:
                 headers=self.av_headers,
                 json=json_data,
             ) as response:
-                # При желании можно вызвать response.raise_for_status()
                 data = await response.json()
 
             results.append(data)
 
-            # Проверяем, есть ли ещё страницы
             page_count = data.get("pageCount", 1)
             if page >= page_count:
                 break
