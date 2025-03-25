@@ -11,10 +11,10 @@ class AVParser(BasicParser):
         super().__init__()
         self.brand: Optional[str] = None
         self._db: DataBaseService = DataBaseService()
+        self.brand_id: Optional[int] = None
         self.model_id: Optional[int] = None
         self.generation_id: Optional[int] = None
         self.stop_update: bool = False
-        self.not_generation_url = NOT_GENERATION_URL
 
     async def run_parser(self, brand: str):
         self.brand = brand.lower()
@@ -35,8 +35,7 @@ class AVParser(BasicParser):
     async def get_generation(self, model: str):
         generations = await self.get_json(data=model)
         if not generations["seo"]["links"]:
-            url = generations["initialValue"]
-            await self.not_generation(url=url, data=generations)
+            await self.not_generation(data=generations)
 
         for generation in generations["seo"]["links"]:
             if self.stop_update:
@@ -67,7 +66,7 @@ class AVParser(BasicParser):
         self.brand_id = data["metadata"]["brandId"]
         self.model_id = data["metadata"]["modelId"]
         self.generation_id = data["metadata"]["generationId"]
-        average_price, count_cars = await self.get_average_price()
+        average_price, count_cars, _ = await self.get_average_price()
 
         car_data = {
             "brand": str(brand).lower(),
@@ -99,11 +98,10 @@ class AVParser(BasicParser):
             cost = [cost["price"]["usd"]["amount"] for cost in car["adverts"]]
             prices.extend(cost)
         average = sum(prices) / len(prices)
-        return average, len(prices)
+        return average, len(prices), cars
 
-    async def not_generation(self, url: str, data: dict):
+    async def not_generation(self, data: dict):
         current_curse = await self.get_current_curse()
-        cars = await self.get_not_generation_json(self.not_generation_url + url)
 
         price_min = (
             float(data["seo"]["microMarkup"]["offers"]["lowPrice"]) / current_curse
@@ -115,11 +113,12 @@ class AVParser(BasicParser):
         model = data["metadata"]["modelSlug"]
         generation = "without generation"
 
-        years_from = cars["adverts"][0]["metadata"]["year"]
-        years_to = cars["adverts"][-1]["metadata"]["year"]
+        self.brand_id = data["metadata"]["brandId"]
+        self.model_id = data["metadata"]["modelId"]
 
-        cost = [cost["price"]["usd"]["amount"] for cost in cars["adverts"]]
-        average_price = sum(cost) / len(cost)
+        average_price, count_cars, cars = await self.get_average_price()
+        years = [year["metadata"]["year"] for car in cars for year in car["adverts"]]
+        years_from, years_to = min(years), max(years)
 
         car_data = {
             "brand": str(brand).lower(),
@@ -130,7 +129,7 @@ class AVParser(BasicParser):
             "price_min": float(price_min),
             "price_max": float(price_max),
             "average_price": float(average_price),
-            "count_cars": int(len(cars)),
+            "count_cars": int(count_cars),
             "updated_at": datetime.now(),
         }
         await self._db.save_car_data(car_data=car_data)
