@@ -142,10 +142,16 @@ class BaseBot:
         )
         if web_car.buy_now:
             text += f"• Купить сейчас : <b>{web_car.buy_now}</b> $\n"
+
         text += (
             f"• Текущая ставка ({datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}): <b>{web_car.current_bid}</b> $\n"
-            f"• Статус продажи: <b>{web_car.sales_status}</b>\n\n"
+            f"• Статус продажи: <b>{web_car.sales_status}</b>\n"
         )
+
+        if web_car.main_damage:
+            text += f"• Основное повреждение: <b>{web_car.main_damage}</b>\n"
+        if web_car.secondary_damage:
+            text += f"• Вторичное повреждение: <b>{web_car.secondary_damage}</b>\n\n"
 
         text += (
             f"🚚 <b>Расходы</b>\n"
