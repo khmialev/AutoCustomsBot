@@ -42,7 +42,10 @@ class CopartParser(BasicParser):
         current_bid = car_data["data"]["lotDetails"]["dynamicLotDetails"]["currentBid"]
         sales_status = car_data["data"]["lotDetails"]["dynamicLotDetails"]["saleStatus"]
         main_damage = car_data["data"]["lotDetails"]["dd"]
-        secondary_damage = car_data["data"]["lotDetails"]["sdd"]
+        try:
+            secondary_damage = car_data["data"]["lotDetails"]["sdd"]
+        except:
+            secondary_damage = None
 
         await self.close_session()
 
