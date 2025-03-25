@@ -4,9 +4,10 @@ from aiogram.types import (
     Message,
 )
 from aiogram import F
+from aiogram.types import InputMediaPhoto
 
 from calculation.car_calculator import CalculateLogic
-from models.cars import CalculateCar
+from models.cars import CalculateCar, AuctionCar
 from parsers.av_parser import AVParser
 from telegram_bot.base_bot import BaseBot
 from telegram_bot.copart_url_calculator import CopartUrlCalculator
@@ -62,7 +63,7 @@ class CarBot(BaseBot):
     async def process_final_car_data(
         self,
         message: Message,
-        auction_car,
+        auction_car: AuctionCar,
         state: FSMContext,
         estimated_price: float = None,
     ):
@@ -89,7 +90,19 @@ class CarBot(BaseBot):
             estimated_price=estimated_price,
         )
 
-        if auction_car.image:
+        if auction_car.images:
+            media = []
+
+            media.append(
+                InputMediaPhoto(
+                    media=auction_car.images[0], caption=text, parse_mode="HTML"
+                )
+            )
+            for url in auction_car.images[1:]:
+                media.append(InputMediaPhoto(media=url))
+            await message.answer_media_group(media)
+
+        elif auction_car.image:
             await message.answer_photo(
                 photo=auction_car.image, caption=text, parse_mode="HTML"
             )
