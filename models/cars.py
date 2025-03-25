@@ -45,4 +45,8 @@ class AuctionCar(BaseModel):
     year: int
     engine: float | None = None
     url: str | None = None
+    buy_now: int | None = None
+    current_bid: int | None = None
+    sales_status: str | None = None
     image: str | None = None
+    images: list[str] = None
