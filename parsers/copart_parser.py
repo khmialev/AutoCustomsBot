@@ -41,6 +41,8 @@ class CopartParser(BasicParser):
         buy_now = car_data["data"]["lotDetails"]["dynamicLotDetails"]["buyTodayBid"]
         current_bid = car_data["data"]["lotDetails"]["dynamicLotDetails"]["currentBid"]
         sales_status = car_data["data"]["lotDetails"]["dynamicLotDetails"]["saleStatus"]
+        main_damage = car_data["data"]["lotDetails"]["dd"]
+        secondary_damage = car_data["data"]["lotDetails"]["sdd"]
 
         await self.close_session()
 
@@ -67,5 +69,7 @@ class CopartParser(BasicParser):
             buy_now=buy_now,
             current_bid=current_bid,
             sales_status=sales_status,
+            main_damage=main_damage,
+            secondary_damage=secondary_damage,
             images=images,
         )
