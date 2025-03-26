@@ -30,6 +30,8 @@ class CopartParser(BasicParser):
                 image["highResUrl"]
                 for image in images_data["data"]["imagesList"]["IMAGE"]
             ]
+        else:
+            images = None
 
         brand = car_data["data"]["lotDetails"]["mkn"]
         model = car_data["data"]["lotDetails"]["lmg"]
