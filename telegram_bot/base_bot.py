@@ -228,12 +228,12 @@ class BaseBot:
         elif isinstance(car, list):
             # Найдено несколько вариантов
             lines.append(
-                "⚠️ <b>Найдено <b>несколько</b> вариантов в базе по этим данным:\n</b>\n"
+                "⚠️ <b>Найдено <b>несколько</b> вариантов в базе по этим данным:</b>\n"
             )
             for c in car:
                 gen = f" ({c.generation})" if c.generation else ""
                 lines.append(
-                    f"  • <b>{c.brand}</b> {c.model}{gen} "
+                    f"  • <b>{c.brand.upper()}</b> {c.model}{gen} "
                     f"(годы: <b>{c.year_from}–{c.year_to}</b>), "
                     f"цена от <b>{c.price_min or '—'}</b> до <b>{c.price_max or '—'}</b>$\n"
                     f"    Количество машин в продаже: <b>{c.count_cars}</b>"
