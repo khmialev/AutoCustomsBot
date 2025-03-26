@@ -95,7 +95,9 @@ class CarBot(BaseBot):
         if auction_car.images:
             try:
                 media = [
-                    InputMediaPhoto(media=auction_car.images[0], caption=text, parse_mode="HTML")
+                    InputMediaPhoto(
+                        media=auction_car.images[0], caption=text, parse_mode="HTML"
+                    )
                 ] + [InputMediaPhoto(media=url) for url in auction_car.images[1:10]]
                 await message.answer_media_group(media)
             except TelegramBadRequest:
