@@ -170,6 +170,17 @@ class BasicParser:
             self.logger.warning(e)
             return False
 
+    async def get_iaai_images(self, image_url: str, proxy: bool, payload: str):
+        params = {"imageKeys": payload}
+        try:
+            async with self._session.get(
+                image_url, ssl=False, proxy=PROXY_URL if proxy else None, params=params
+            ) as response:
+                return await response.json()
+        except Exception as e:
+            self.logger.warning(e)
+            return False
+
     async def get_iaai_engine(self, iaai_url: str, proxy: bool):
         try:
             async with self._session.get(
