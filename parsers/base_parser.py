@@ -160,21 +160,21 @@ class BasicParser:
             self.logger.warning(e)
             return False
 
-    async def get_iaai_json(self, iaai_url: str):
+    async def get_iaai_json(self, iaai_url: str, proxy: bool):
         try:
             async with self._session.get(
-                iaai_url,
-                ssl=False,
+                iaai_url, ssl=False, proxy=PROXY_URL if proxy else None
             ) as response:
                 return await response.json()
         except Exception as e:
             self.logger.warning(e)
             return False
 
-    async def get_iaai_engine(self, iaai_url: str):
-        # надо мб прокси или через селениум но там капча
+    async def get_iaai_engine(self, iaai_url: str, proxy: bool):
         try:
-            async with self._session.get(iaai_url, ssl=False) as response:
+            async with self._session.get(
+                iaai_url, ssl=False, proxy=PROXY_URL if proxy else None
+            ) as response:
                 html = await response.text()
                 soup = BeautifulSoup(html, "lxml")
                 engine = soup.find("span", {"id": "ingine_image"}).text.strip()
