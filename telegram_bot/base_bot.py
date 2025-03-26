@@ -144,12 +144,14 @@ class BaseBot:
         lines.append("🪒 <b>Данные по аукциону</b>")
         if web_car.buy_now:
             lines.append(f"• Купить сейчас: <b>{web_car.buy_now}</b> $")
-        lines.append(
-            f"• Текущая ставка "
-            f"({datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}): "
-            f"<b>{web_car.current_bid}</b> $"
-        )
-        lines.append(f"• Статус продажи: <b>{web_car.sales_status}</b>")
+        if web_car.current_bid:
+            lines.append(
+                f"• Текущая ставка "
+                f"({datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}): "
+                f"<b>{web_car.current_bid}</b> $"
+            )
+        if web_car.sales_status:
+            lines.append(f"• Статус продажи: <b>{web_car.sales_status}</b>")
 
         # 4) Повреждения
         # Вместо громоздкого if-else — простой сбор в список
