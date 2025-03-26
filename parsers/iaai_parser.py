@@ -1,4 +1,4 @@
-from config import IAAI_URL
+from config import IAAI_URL, IMAGE_URL
 from models.cars import AuctionCar
 from parsers.base_parser import BasicParser
 
@@ -8,6 +8,7 @@ class IaaiParser(BasicParser):
         super().__init__()
         self.url = iaai_url
         self.use_proxy: bool = False
+        self.image_url = IMAGE_URL
 
     async def get_data(self):
         await self.get_session()
@@ -20,11 +21,16 @@ class IaaiParser(BasicParser):
         model = car_data["ModelName"]
         year = car_data["ModelYear"]
         salvage_id = car_data["SalvageId"]
-        branch_number = car_data["AdministrativeBranchNumber"]
-        image_url = f"https://vis.iaai.com/resizer?imageKeys={salvage_id}~SID~B{branch_number}~S0~I1~RW2576~TH0&width=845&height=633"
+        payload = f"{salvage_id}~SID"
+        images_data = await self.get_iaai_images(
+            image_url=self.image_url, proxy=self.use_proxy, payload=payload
+        )
+        if not images_data:
+            return False
+
         images = [
-            f"https://vis.iaai.com/resizer?imageKeys={salvage_id}~SID~B{branch_number}~S0~I{i}~RW2576~TH0&width=845&height=633"
-            for i in range(1, 10)
+            f'https://vis.iaai.com/resizer?imageKeys={image["K"]}&width=845&height=633'
+            for image in images_data["keys"]
         ]
 
         dirty_engine = await self.get_iaai_engine(
@@ -44,6 +50,5 @@ class IaaiParser(BasicParser):
             year=year,
             engine=engine,
             url=self.url,
-            image=image_url,
             images=images,
         )
