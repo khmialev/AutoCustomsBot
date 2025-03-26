@@ -18,14 +18,19 @@ class CopartParser(BasicParser):
         images_data = await self.get_copart_lot_images(
             lot_id=car_code, referer=self.url, proxy=self.use_proxy
         )
-        images = [
-            image["highResUrl"] for image in images_data["data"]["imagesList"]["IMAGE"]
-        ]
+
         car_data = await self.get_copart_json(
             copart_url=copart_url, referer=self.url, proxy=self.use_proxy
         )
         if not car_data:
             return False
+
+        if images_data:
+            images = [
+                image["highResUrl"]
+                for image in images_data["data"]["imagesList"]["IMAGE"]
+            ]
+
         brand = car_data["data"]["lotDetails"]["mkn"]
         model = car_data["data"]["lotDetails"]["lmg"]
         year = car_data["data"]["lotDetails"]["lcy"]
