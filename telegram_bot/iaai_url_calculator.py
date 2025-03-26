@@ -60,12 +60,13 @@ class IaaiUrlCalculator:
         car = IaaiParser(iaai_url=url)
         iaai_car = None
 
-        for _ in range(5):
+        for _ in range(3):
             iaai_car: AuctionCar = await car.get_data()
             if not iaai_car:
+                car.use_proxy = True
                 await car.close_session()
                 await message.answer(
-                    "🔴 Нет ответа от Copart. Жду 10 секунд и пробую ещё...",
+                    "🔴 Нет ответа от Iaai. Жду 10 секунд и пробую ещё...",
                     parse_mode="HTML",
                 )
                 await asyncio.sleep(10)

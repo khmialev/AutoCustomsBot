@@ -91,17 +91,21 @@ class CarBot(BaseBot):
         )
 
         if auction_car.images:
-            media = []
+            try:
+                media = []
 
-            media.append(
-                InputMediaPhoto(
-                    media=auction_car.images[0], caption=text, parse_mode="HTML"
+                media.append(
+                    InputMediaPhoto(
+                        media=auction_car.images[0], caption=text, parse_mode="HTML"
+                    )
                 )
-            )
-            for url in auction_car.images[1:10]:
-                media.append(InputMediaPhoto(media=url))
-            await message.answer_media_group(media)
-
+                for url in auction_car.images[1:10]:
+                    media.append(InputMediaPhoto(media=url))
+                await message.answer_media_group(media)
+            except:
+                await message.answer_photo(
+                    photo=auction_car.image, caption=text, parse_mode="HTML"
+                )
         elif auction_car.image:
             await message.answer_photo(
                 photo=auction_car.image, caption=text, parse_mode="HTML"
