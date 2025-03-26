@@ -26,7 +26,11 @@ class CalculateCar(BaseModel):
     def discounted_common_total(self) -> Optional[float]:
         if self.car_tax is None:
             return None
-        return (self.car_tax * self.euro_usd) / 2 + self.fixed_costs()
+        return (
+            (self.car_tax * self.euro_usd) / 2
+            + self.fixed_costs()
+            + self.disabled_person
+        )
 
     def big_total(self) -> Optional[float]:
         if self.big_car_tax is None:
@@ -36,7 +40,11 @@ class CalculateCar(BaseModel):
     def discounted_big_total(self) -> Optional[float]:
         if self.big_car_tax is None:
             return None
-        return (self.big_car_tax * self.euro_usd) / 2 + self.fixed_costs()
+        return (
+            (self.big_car_tax * self.euro_usd) / 2
+            + self.fixed_costs()
+            + self.disabled_person
+        )
 
 
 class AuctionCar(BaseModel):
