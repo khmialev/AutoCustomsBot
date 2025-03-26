@@ -61,7 +61,7 @@ class CopartUrlCalculator:
         )
         car = CopartParser(copart_url=url)
         copart_car = None
-        for _ in range(5):
+        for _ in range(3):
             copart_car: AuctionCar = await car.get_data()
             if not copart_car:
                 car.use_proxy = True
