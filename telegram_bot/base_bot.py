@@ -172,8 +172,8 @@ class BaseBot:
         lines.append(f"• Доставка: <b>{car_calculate.delivery} $</b>")
         lines.append(f"• Комиссия аукциона: <b>{car_calculate.auction_tax} $</b>")
         lines.append(f"• Декларанты: <b>{car_calculate.declorants} $</b>")
+        lines.append(f"• Льготник: <b>{car_calculate.disabled_person} $</b>")
         lines.append(f"• Кнопка: <b>{car_calculate.auction_button} $</b>\n")
-        lines.append(f"• Льготник: <b>{car_calculate.disabled_person} $</b>\n")
 
         # 6) Предполагаемая стоимость покупки (если есть)
         if estimated_price:
