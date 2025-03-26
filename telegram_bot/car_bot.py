@@ -1,3 +1,4 @@
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (
@@ -90,22 +91,30 @@ class CarBot(BaseBot):
             estimated_price=estimated_price,
         )
 
+        # дичь какая то, но работет
         if auction_car.images:
             try:
-                media = []
-
-                media.append(
-                    InputMediaPhoto(
-                        media=auction_car.images[0], caption=text, parse_mode="HTML"
-                    )
-                )
-                for url in auction_car.images[1:10]:
-                    media.append(InputMediaPhoto(media=url))
+                media = [
+                    InputMediaPhoto(media=auction_car.images[0], caption=text, parse_mode="HTML")
+                ] + [InputMediaPhoto(media=url) for url in auction_car.images[1:10]]
                 await message.answer_media_group(media)
+            except TelegramBadRequest:
+                text = await self.get_text(
+                    web_car=auction_car,
+                    car_calculate=car_calculate,
+                    estimated_price=estimated_price,
+                    msg_to_long=True,
+                )
+                await message.answer_photo(
+                    photo=auction_car.image,
+                    caption=text,
+                    parse_mode="HTML",
+                )
             except:
                 await message.answer_photo(
                     photo=auction_car.image, caption=text, parse_mode="HTML"
                 )
+
         elif auction_car.image:
             await message.answer_photo(
                 photo=auction_car.image, caption=text, parse_mode="HTML"

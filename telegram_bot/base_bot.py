@@ -114,6 +114,7 @@ class BaseBot:
         web_car: AuctionCar,
         car_calculate: CalculateCar,
         estimated_price: float = None,
+        msg_to_long: bool = False,
     ):
         car: list[Car] | Car = await self.db.get_car_price(
             brand=web_car.brand,
@@ -131,7 +132,7 @@ class BaseBot:
 
         # 1) Источник данных
         if web_car.url:
-            lines.append(f"<b>Источник (URL):</b> {web_car.url}")
+            lines.append(f"<b>Источник:</b> {web_car.url}")
 
         # 2) Блок про автомобиль
         lines.append("🚗 <b>Автомобиль</b>")
@@ -140,18 +141,19 @@ class BaseBot:
         lines.append(f"• Год: <b>{web_car.year}</b>")
         lines.append(f"• Двигатель: <b>{web_car.engine}</b> см³")
 
-        # 3) Данные по аукциону
-        lines.append("🪒 <b>Данные по аукциону</b>")
-        if web_car.buy_now:
-            lines.append(f"• Купить сейчас: <b>{web_car.buy_now}</b> $")
-        if web_car.current_bid:
-            lines.append(
-                f"• Текущая ставка "
-                f"({datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}): "
-                f"<b>{web_car.current_bid}</b> $"
-            )
-        if web_car.sales_status:
-            lines.append(f"• Статус продажи: <b>{web_car.sales_status}</b>")
+        if not msg_to_long:
+            # 3) Данные по аукциону
+            lines.append("🪒 <b>Данные по аукциону</b>")
+            if web_car.buy_now:
+                lines.append(f"• Купить сейчас: <b>{web_car.buy_now}</b> $")
+            if web_car.current_bid:
+                lines.append(
+                    f"• Текущая ставка "
+                    f"({datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}): "
+                    f"<b>{web_car.current_bid}</b> $"
+                )
+            if web_car.sales_status:
+                lines.append(f"• Статус продажи: <b>{web_car.sales_status}</b>")
 
         # 4) Повреждения
         # Вместо громоздкого if-else — простой сбор в список
@@ -160,7 +162,7 @@ class BaseBot:
             damage_lines.append(f"• Основное повреждение: <b>{web_car.main_damage}</b>")
         if web_car.secondary_damage:
             damage_lines.append(
-                f"• Вторичное повреждение: <b>{web_car.secondary_damage}</b>"
+                f"• Вторичные повреждение: <b>{web_car.secondary_damage}</b>"
             )
 
         if damage_lines:
@@ -243,7 +245,7 @@ class BaseBot:
             # Нашёлся ровно один вариант Car
             lines.append(f"• Первая цена в РБ: <b>{car.price_min} $</b>")
             lines.append(f"• Средняя цена в РБ: <b>{car.average_price} $</b>")
-            lines.append(f"• Количество машин в продаже: <b>{car.count_cars}</b>\n")
+            lines.append(f"• Количество машин в продаже: <b>{car.count_cars}</b>")
 
         # Превращаем список строк в один текст с переводами строк.
         text = "\n".join(lines)
