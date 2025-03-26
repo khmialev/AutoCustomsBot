@@ -6,8 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from parsers.copart_parser import CopartParser
-from calculation.car_calculator import CalculateLogic
-from models.cars import CalculateCar, AuctionCar
+from models.cars import AuctionCar
 from models.fsm_states import CopartCalcStates
 
 
@@ -53,6 +52,7 @@ class CopartUrlCalculator:
                 "(Ссылка должна начинаться с <code>http</code>)",
                 parse_mode="HTML",
             )
+            await state.clear()
             return
 
         await message.answer(
