@@ -131,17 +131,17 @@ class BaseBot:
 
         # 1) Источник данных
         if web_car.url:
-            lines.append(f"<b>Источник данных (URL):</b> {web_car.url}\n")
+            lines.append(f"<b>Источник (URL):</b> {web_car.url}")
 
         # 2) Блок про автомобиль
         lines.append("🚗 <b>Автомобиль</b>")
         lines.append(f"• Бренд: <b>{web_car.brand.upper()}</b>")
         lines.append(f"• Модель: <b>{web_car.model.upper()}</b>")
         lines.append(f"• Год: <b>{web_car.year}</b>")
-        lines.append(f"• Объем двигателя: <b>{web_car.engine}</b> см³\n")
+        lines.append(f"• Двигатель: <b>{web_car.engine}</b> см³")
 
         # 3) Данные по аукциону
-        lines.append("• <b>Данные по аукциону</b>")
+        lines.append("🪒 <b>Данные по аукциону</b>")
         if web_car.buy_now:
             lines.append(f"• Купить сейчас: <b>{web_car.buy_now}</b> $")
         lines.append(
@@ -164,7 +164,6 @@ class BaseBot:
         if damage_lines:
             # Добавим пустую строчку перед блоком повреждений
             lines.extend(damage_lines)
-            lines.append("")  # пустая строка после блока
 
         # 5) Расходы
         lines.append("🚚 <b>Расходы</b>")
@@ -175,18 +174,12 @@ class BaseBot:
 
         # 6) Предполагаемая стоимость покупки (если есть)
         if estimated_price:
-            lines.append(
-                f"• <b>Предполагаемая стоимость покупки авто: {estimated_price} $</b>\n"
-            )
+            lines.append(f"• <b>Ожидаемая стоимость: {estimated_price} $</b>\n")
 
         # 7) Пошлина на авто 3-5 лет (если car_tax есть)
         if car_calculate.car_tax is not None:
             # Определяем заголовок в зависимости от того, задана ли estimated_price
-            header = (
-                "Пошлина на авто ДО 3 лет"
-                if estimated_price
-                else "Пошлина на авто 3–5 лет"
-            )
+            header = "Пошлина ДО 3 лет" if estimated_price else "Пошлина (3–5 лет)"
             lines.append(f"💵 <b>{header}</b>")
             lines.append(
                 f"• Без льготы: <b>{car_calculate.car_tax * self.euro_usd:.2f} $</b>"
@@ -195,7 +188,7 @@ class BaseBot:
                 f"• С учетом льготы: <b>{(car_calculate.car_tax * self.euro_usd) / 2:.2f} $</b>"
             )
             if common_total is not None:
-                lines.append(" <b>-------------------------------------------</b>")
+                lines.append("───────────")
                 lines.append(f"• Итог (без льготы): <b>{common_total} $</b>")
                 lines.append(
                     f"• Итог (с льготой): <b>{discounted_common_total} $</b>\n"
@@ -204,11 +197,7 @@ class BaseBot:
         # 8) Пошлина на авто старше 5 лет (big_car_tax)
         if car_calculate.big_car_tax is not None:
             # Аналогично выбираем заголовок
-            header = (
-                "Пошлина на авто 3–5 лет"
-                if estimated_price
-                else "Пошлина на авто СТАРШЕ 5 лет"
-            )
+            header = "Пошлина (3–5 лет)" if estimated_price else "Пошлина СТАРШЕ 5 лет"
             lines.append(f"💵 <b>{header}</b>")
             lines.append(
                 f"• Без льготы: <b>{car_calculate.big_car_tax * self.euro_usd:.2f} $</b>"
@@ -217,32 +206,26 @@ class BaseBot:
                 f"• С учетом льготы: <b>{(car_calculate.big_car_tax * self.euro_usd) / 2:.2f} $</b>"
             )
             if big_total is not None:
-                lines.append(" <b>-------------------------------------------</b>")
+                lines.append("───────────")
                 lines.append(f"• Итог (без льготы): <b>{big_total} $</b>")
                 lines.append(f"• Итог (с льготой): <b>{discounted_big_total} $</b>\n")
 
         # 9) Предупреждение, если есть estimated_price
         if estimated_price:
             lines.append(
-                "⚠️ <b>Внимание</b>\n"
-                "Нужно <b>уточнить</b>, в каком месяце авто выпущено. "
-                "Возможно, пока автомобиль будет в пути, оно попадёт в категорию «3–5 лет».\n"
+                "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>\n"
             )
 
         # 10) Информация из базы (car)
         if car is None:
             lines.append(
-                "❌ <b>Нет информации в базе</b> "
-                f"по этой комбинации (Бренд: {web_car.brand.upper()}, "
-                f"модель: {web_car.model}, год выпуска: {web_car.year}).\n"
+                f"❌ <b>Бренд: {web_car.brand.upper()},модель: {web_car.model}, год выпуска: {web_car.year}).</b> "
+                f" Нет в базе\n"
             )
         elif isinstance(car, list):
             # Найдено несколько вариантов
             lines.append(
-                "⚠️ <b>Внимание</b>\n"
-                "Найдено <b>несколько</b> вариантов в базе по этим данным.\n"
-                "Возможно, у этого бренда и года есть разные поколения или модификации.\n\n"
-                "Список найденных вариантов:"
+                "⚠️ <b>Найдено <b>несколько</b> вариантов в базе по этим данным:\n</b>\n"
             )
             for c in car:
                 gen = f" ({c.generation})" if c.generation else ""
@@ -252,10 +235,7 @@ class BaseBot:
                     f"цена от <b>{c.price_min or '—'}</b> до <b>{c.price_max or '—'}</b>$\n"
                     f"    Количество машин в продаже: <b>{c.count_cars}</b>"
                 )
-            lines.append(
-                "\nПроверьте вручную, какой из этих вариантов вам подходит. "
-                "Я не могу выбрать автоматически.\n"
-            )
+            lines.append("\nПроверьте вручную, какой из этих вариантов вам подходит. ")
         else:
             # Нашёлся ровно один вариант Car
             lines.append(f"• Первая цена в РБ: <b>{car.price_min} $</b>")
