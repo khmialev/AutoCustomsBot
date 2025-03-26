@@ -156,18 +156,20 @@ class BaseBot:
                 lines.append(f"• Статус продажи: <b>{web_car.sales_status}</b>")
 
         # 4) Повреждения
-        # Вместо громоздкого if-else — простой сбор в список
-        damage_lines = []
-        if web_car.main_damage:
-            damage_lines.append(f"• Основное повреждение: <b>{web_car.main_damage}</b>")
-        if web_car.secondary_damage:
-            damage_lines.append(
-                f"• Вторичные повреждение: <b>{web_car.secondary_damage}</b>"
-            )
+        if not msg_to_long:
+            damage_lines = []
+            if web_car.main_damage:
+                damage_lines.append(
+                    f"• Основное повреждение: <b>{web_car.main_damage}</b>"
+                )
+            if web_car.secondary_damage:
+                damage_lines.append(
+                    f"• Вторичные повреждение: <b>{web_car.secondary_damage}</b>"
+                )
 
-        if damage_lines:
-            # Добавим пустую строчку перед блоком повреждений
-            lines.extend(damage_lines)
+            if damage_lines:
+                # Добавим пустую строчку перед блоком повреждений
+                lines.extend(damage_lines)
 
         # 5) Расходы
         lines.append("🚚 <b>Расходы</b>")
@@ -235,10 +237,9 @@ class BaseBot:
             for c in car:
                 gen = f" ({c.generation})" if c.generation else ""
                 lines.append(
-                    f"  • <b>{c.brand.upper()}</b> {c.model}{gen} "
-                    f"(годы: <b>{c.year_from}–{c.year_to}</b>), "
+                    f"• <b>{c.brand.upper()}</b> (годы: <b>{c.year_from}–{c.year_to}</b>), "
                     f"цена от <b>{c.price_min or '—'}</b> до <b>{c.price_max or '—'}</b>$\n"
-                    f"    Количество машин в продаже: <b>{c.count_cars}</b>"
+                    f"Количество машин в продаже: <b>{c.count_cars}</b>"
                 )
             lines.append("\nПроверьте вручную, какой из этих вариантов вам подходит. ")
         else:
