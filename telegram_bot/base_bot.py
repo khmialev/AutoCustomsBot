@@ -220,7 +220,7 @@ class BaseBot:
         # 9) Предупреждение, если есть estimated_price
         if estimated_price:
             lines.append(
-                "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>\n"
+                "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>"
             )
 
         # 10) Информация из базы (car)
@@ -232,19 +232,18 @@ class BaseBot:
         elif isinstance(car, list):
             # Найдено несколько вариантов
             lines.append(
-                "⚠️ <b>Найдено <b>несколько</b> вариантов в базе по этим данным:</b>\n"
+                "⚠️ <b>Найдено <b>несколько</b> вариантов в базе по этим данным:</b>"
             )
             for c in car:
                 gen = f" ({c.generation})" if c.generation else ""
                 lines.append(
-                    f"• <b>{c.brand.upper()}</b> (годы: <b>{c.year_from}–{c.year_to}</b>), "
-                    f"цена от <b>{c.price_min or '—'}</b> до <b>{c.price_max or '—'}</b>$\n"
+                    f"\n• <b>{c.brand.upper()} {c.model.upper()}</b> (<b>{c.year_from}–{c.year_to}</b>)\n"
+                    f"• Первая цена <b>{c.price_min or '—'}$</b>\n• Средняя цена <b>{c.average_price or '—'}</b>$\n"
                     f"Количество машин в продаже: <b>{c.count_cars}</b>"
                 )
-            lines.append("\nПроверьте вручную, какой из этих вариантов вам подходит. ")
         else:
             # Нашёлся ровно один вариант Car
-            lines.append(f"• Первая цена в РБ: <b>{car.price_min} $</b>")
+            lines.append(f"\n• Первая цена в РБ: <b>{car.price_min} $</b>")
             lines.append(f"• Средняя цена в РБ: <b>{car.average_price} $</b>")
             lines.append(f"• Количество машин в продаже: <b>{car.count_cars}</b>")
 
