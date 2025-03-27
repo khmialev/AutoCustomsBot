@@ -70,6 +70,9 @@ class CopartParser(BasicParser):
             model = "glb"
         if "taos" in model.lower():
             model = "taos"
+        if "rs" in model.lower():
+            if "q8" in car_data["data"]["lotDetails"]["lm"]:
+                model = "rs-q8"
 
         return AuctionCar(
             brand=brand,
