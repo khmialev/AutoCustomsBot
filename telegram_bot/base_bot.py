@@ -217,10 +217,14 @@ class BaseBot:
                 lines.append(f"• Итог (без льготы): <b>{big_total} $</b>")
                 lines.append(f"• Итог (с льготой): <b>{discounted_big_total} $</b>\n")
 
-        # 9) Предупреждение, если есть estimated_price ПРОВЕрка НЕПРАВИЛЬНАЯ!
+        # 9) Предупреждение, если таможня пересекается
         if datetime.datetime.now().year - web_car.year == 3:
             lines.append(
                 "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>"
+            )
+        if datetime.datetime.now().year - web_car.year == 5:
+            lines.append(
+                "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию « СТАРШЕ 5 лет».</b>"
             )
 
         # 10) Информация из базы (car)
