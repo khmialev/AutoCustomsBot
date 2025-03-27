@@ -22,6 +22,7 @@ class CopartParser(BasicParser):
         car_data = await self.get_copart_json(
             copart_url=copart_url, referer=self.url, proxy=self.use_proxy
         )
+        await self.close_session()
         if not car_data:
             return False
 
@@ -53,8 +54,6 @@ class CopartParser(BasicParser):
             secondary_damage = car_data["data"]["lotDetails"]["sdd"]
         except:
             secondary_damage = None
-
-        await self.close_session()
 
         if "class" in model.lower():
             model = model.lower().replace("class", "klass").replace(" ", "")
