@@ -40,7 +40,7 @@ class DataBaseService(DataBaseConnection):
                 # year_from включительно
                 .where(Car.year_from <= year)
                 # year_to НЕ включительно
-                .where(Car.year_to > year)
+                .where(Car.year_to >= year)
             )
             # Если хотим получить одну запись (или None, если не нашлось)
             result = await session.execute(stmt)
