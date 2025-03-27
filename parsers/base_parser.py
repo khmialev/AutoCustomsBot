@@ -161,7 +161,6 @@ class BasicParser:
         }
 
         self.copart_image_headers["referer"] = referer
-        await self.smart_sleep()
         try:
             async with self._session.post(
                 url=self.copart_lot_images_url,
