@@ -22,7 +22,7 @@ class CopartUrlCalculator:
             self.process_url_input_copart, CopartCalcStates.waiting_for_url
         )
         self.bot.dp.message.register(
-            self.process_car_price_for_under_3_years,
+            self.bot.process_car_price_for_under_3_years,
             CopartCalcStates.waiting_for_price_under_3_years,
         )
 
@@ -82,7 +82,7 @@ class CopartUrlCalculator:
             await state.clear()
             return
 
-        await state.update_data(copart_car=copart_car)
+        await state.update_data(car=copart_car)
         year = datetime.datetime.now().year
         if year - copart_car.year < 3:
             await message.answer(
@@ -97,27 +97,3 @@ class CopartUrlCalculator:
             await self.bot.process_final_car_data(
                 message=message, auction_car=copart_car, state=state
             )
-
-    async def process_car_price_for_under_3_years(
-        self, message: Message, state: FSMContext
-    ):
-        estimated_price = message.text.strip()
-        try:
-            car_price = float(estimated_price)
-        except ValueError:
-            await message.answer("❌ Пожалуйста, введите число (например, 15000).")
-            return
-
-        data = await state.get_data()
-        copart_car = data.get("copart_car")
-        if not copart_car:
-            await message.answer("Данные о машине не найдены, начните заново.")
-            await state.clear()
-            return
-
-        await self.bot.process_final_car_data(
-            message=message,
-            auction_car=copart_car,
-            state=state,
-            estimated_price=car_price,
-        )

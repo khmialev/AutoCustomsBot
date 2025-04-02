@@ -23,7 +23,7 @@ class IaaiUrlCalculator:
             self.process_url_input_iaai, IaaiCalcStates.waiting_for_url
         )
         self.bot.dp.message.register(
-            self.process_car_price_for_under_3_years,
+            self.bot.process_car_price_for_under_3_years,
             IaaiCalcStates.waiting_for_price_under_3_years,
         )
 
@@ -81,7 +81,7 @@ class IaaiUrlCalculator:
             await state.clear()
             return
 
-        await state.update_data(iaai_car=iaai_car)
+        await state.update_data(car=iaai_car)
         year = datetime.datetime.now().year
         if year - iaai_car.year < 3:
             await message.answer(
@@ -96,27 +96,3 @@ class IaaiUrlCalculator:
             await self.bot.process_final_car_data(
                 message=message, auction_car=iaai_car, state=state
             )
-
-    async def process_car_price_for_under_3_years(
-        self, message: Message, state: FSMContext
-    ):
-        estimated_price = message.text.strip()
-        try:
-            car_price = float(estimated_price)
-        except ValueError:
-            await message.answer("❌ Пожалуйста, введите число (например, 15000).")
-            return
-
-        data = await state.get_data()
-        iaai_car = data.get("iaai_car")
-        if not iaai_car:
-            await message.answer("Данные о машине не найдены, начните заново.")
-            await state.clear()
-            return
-
-        await self.bot.process_final_car_data(
-            message=message,
-            auction_car=iaai_car,
-            state=state,
-            estimated_price=car_price,
-        )

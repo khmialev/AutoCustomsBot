@@ -63,6 +63,30 @@ class CarBot(BaseBot):
         )
         # удалить клаву
 
+    async def process_car_price_for_under_3_years(
+        self, message: Message, state: FSMContext
+    ):
+        estimated_price = message.text.strip()
+        try:
+            car_price = float(estimated_price)
+        except ValueError:
+            await message.answer("❌ Пожалуйста, введите число (например, 15000).")
+            return
+
+        data = await state.get_data()
+        car = data.get("car")
+        if not car:
+            await message.answer("Данные о машине не найдены, начните заново.")
+            await state.clear()
+            return
+
+        await self.bot.process_final_car_data(
+            message=message,
+            auction_car=car,
+            state=state,
+            estimated_price=car_price,
+        )
+
     async def process_final_car_data(
         self,
         message: Message,
