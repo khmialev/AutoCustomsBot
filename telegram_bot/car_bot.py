@@ -11,6 +11,7 @@ from calculation.car_calculator import CalculateLogic
 from models.cars import CalculateCar, AuctionCar
 from parsers.av_parser import AVParser
 from telegram_bot.base_bot import BaseBot
+from telegram_bot.bid_cars import BidCarsUrlCalculator
 from telegram_bot.copart_url_calculator import CopartUrlCalculator
 from telegram_bot.iaai_url_calculator import IaaiUrlCalculator
 from telegram_bot.manual_basic_calculator import ManualBasicCalculator
@@ -26,6 +27,7 @@ class CarBot(BaseBot):
         self.update_db_handler = UpdateDBHandler(self)
         self.copart_url_calculator = CopartUrlCalculator(self)
         self.iaai = IaaiUrlCalculator(self)
+        self.bid_cars = BidCarsUrlCalculator(self)
         self.manual_basic_calculator = ManualBasicCalculator(self)
         self.manual_spec_calculator = ManualSpecCalculator(self)
 
