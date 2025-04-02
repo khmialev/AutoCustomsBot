@@ -98,7 +98,11 @@ class BaseBot:
     async def _create_main_keyboard(self):
         """Главное меню"""
         buttons = [
-            ["Расчет по ссылке с copart", "Расчет по ссылке с iaai"],
+            [
+                "Расчет по ссылке с copart",
+                "Расчет по ссылке с iaai",
+                "Расчет по ссылке с BidCars",
+            ],
             ["Обновить БД с ценами (av.by)", "Расчет по данным"],
         ]
 
@@ -218,11 +222,11 @@ class BaseBot:
                 lines.append(f"• Итог (с льготой): <b>{discounted_big_total} $</b>\n")
 
         # 9) Предупреждение, если таможня пересекается
-        if datetime.datetime.now().year - web_car.year == 3:
+        if datetime.datetime.now().year - web_car.year == 2 and estimated_price:
             lines.append(
                 "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>"
             )
-        if datetime.datetime.now().year - web_car.year == 5:
+        if datetime.datetime.now().year - web_car.year >= 5:
             lines.append(
                 "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию « СТАРШЕ 5 лет».</b>"
             )
