@@ -4,6 +4,7 @@ from random import uniform
 import aiohttp
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from sqlalchemy.util import await_only
 
 import Logger
 from Logger import MyLogger
@@ -59,7 +60,6 @@ class BasicParser:
         "sec-fetch-site": "same-origin",
         "user-agent": ua,
         "x-requested-with": "XMLHttpRequest",
-        # 'cookie': 'g2usersessionid=194cd5e0f7b1804ca2b095e9dbeccf62; G2JSESSIONID=4B66099D486D8B31434DFA4F70439050-n1; visid_incap_242093=X9v212+ZQnyApty3J0Hhp55Q5WcAAAAAQUIPAAAAAAAgC+2srD1oH6/bfbzXaVaH; nlbi_242093=aYIKbROfnRemvTJjie/jegAAAABsP4dyd7GTmI2Wjo5OkP89; incap_ses_520_242093=ybzgOIbtPH7PDPZbQ2k3B59Q5WcAAAAAibkhC3NOzDbf5uWNLm6SXg==; userLang=en; anonymousCrmId=6655d269-1908-4774-89d6-2616cc14605e; timezone=Europe%2FMinsk; reese84=3:rcZJBbt1RFyHGrLf9MN9fw==:qw6VJj58eIvyJaISi5lHFK0gcGj3RZqGSO4GXhNaPusXaNhlWTgGbdUYryEE7iZ6ZWhCsTc1mDLovon1MQVolIuychlwzpUBd9wnKaxaSxFBaLn7sk+rM0wtz1TPgyvg6BKeF1lyR8RxDG0H8UOeI6DusaDrviQuT26lREEv1JS8c6G5i9CdaT0LkJkivXajSw4A4ke3TzHqL2qB9RVy5fsU3e0Nwg+q91qs1fmSJ78OhZOktq9/JNdCl3QaCDBqWW44U3hyG9DW8oxreNT6CBPOdZ6Tj+Gm78oKRoJQMMBwBrypvEPA/R4BM/5V22cPu3OyfnP0qqQ0kxhcKZDc9FUmiywBAWZ2r7so6g9POeoT55+3dlDHXcp/UDPjaHh7i09M+IDLWX1JJp3pWYZWVGuS8tYbenbCNEzyT4uISZatPXvQRYyxJ5QQbV3IJ52Yf0IysuvQZtDjS1vmvgO/Fa2smuzPA02bVRWbGj8g2zQ=:SeqW01z/IstWWfzgYHXw9BQBzXtfMiiSjwxB8h4OmnQ=; OAGEO=PL%7CMazowieckie%7CWarsaw%7C05-077%7C52.22977%7C21.01178%7C%7C022%7C%7CThe+Constant+Company+LLC%7CT1; usersessionid=a464acc53ef4b4804afa8864eaa2ad5e; OAID=3e6048a3d9ee919af82aad895b36ce54; lhnStorageType=cookie; lhnStorageType=cookie; lhnRefresh=79b845f8-69a0-4d17-8e41-53f6d860a498; lhnRefresh=79b845f8-69a0-4d17-8e41-53f6d860a498; lhnJWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ2aXNpdG9yIiwiZG9tYWluIjoiIiwiZXhwIjoxNzQzMTY4NzgyLCJpYXQiOjE3NDMwODIzODIsImlzcyI6eyJhcHAiOiJqc19zZGsiLCJjbGllbnQiOjIyNzI0LCJjbGllbnRfbGV2ZWwiOiJiYXNpYyIsImxobnhfZmVhdHVyZXMiOltdLCJ2aXNpdG9yX3RyYWNraW5nIjp0cnVlfSwianRpIjoiODI3OTY2ODEtOWRkNi00MGRmLWFlNzMtN2RhMzc5ZDNmOTMwIiwicmVzb3VyY2UiOnsiaWQiOiI4Mjc5NjY4MS05ZGQ2LTQwZGYtYWU3My03ZGEzNzlkM2Y5MzAtMjI3MjQtSmxuRHNNMiIsInR5cGUiOiJFbGl4aXIuTGhuRGIuTW9kZWwuQ29yZS5WaXNpdG9yIn19.5NbUn87KS82lerFglZgSjXAGx65E9lKqevQi0VMOja0; lhnJWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ2aXNpdG9yIiwiZG9tYWluIjoiIiwiZXhwIjoxNzQzMTY4NzgyLCJpYXQiOjE3NDMwODIzODIsImlzcyI6eyJhcHAiOiJqc19zZGsiLCJjbGllbnQiOjIyNzI0LCJjbGllbnRfbGV2ZWwiOiJiYXNpYyIsImxobnhfZmVhdHVyZXMiOltdLCJ2aXNpdG9yX3RyYWNraW5nIjp0cnVlfSwianRpIjoiODI3OTY2ODEtOWRkNi00MGRmLWFlNzMtN2RhMzc5ZDNmOTMwIiwicmVzb3VyY2UiOnsiaWQiOiI4Mjc5NjY4MS05ZGQ2LTQwZGYtYWU3My03ZGEzNzlkM2Y5MzAtMjI3MjQtSmxuRHNNMiIsInR5cGUiOiJFbGl4aXIuTGhuRGIuTW9kZWwuQ29yZS5WaXNpdG9yIn19.5NbUn87KS82lerFglZgSjXAGx65E9lKqevQi0VMOja0; lhnContact=82796681-9dd6-40df-ae73-7da379d3f930-22724-JlnDsM2; lhnContact=82796681-9dd6-40df-ae73-7da379d3f930-22724-JlnDsM2; FCCDCF=%5Bnull%2Cnull%2Cnull%2C%5B%22CQO7dIAQO7dIAEsACBENBiFoAP_gAEPgACiQINJD7C7FbSFCwD5zaLsAMAhHRsAAQoQAAASBAmABQAKQIAQCgkAYFASgBAACAAAAICRBIQIECAAAAUAAQAAAAAAEAAAAAAAIIAAAgAEAAAAIAAACAIAAEAAIAAAAEAAAmAgAAIIACAAAgAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAQNVSD2F2K2kKFkHCmwXYAYBCujYAAhQgAAAkCBMACgAUgQAgFJIAgCIFAAAAAAAAAQEiCQAAQABAAAIACgAAAAAAIAAAAAAAQQAABAAIAAAAAAAAEAQAAIAAQAAAAIAABEhAAAQQAEAAAAAAAQAAA%22%2C%222~70.89.93.108.122.149.184.196.236.259.311.313.314.323.358.415.442.486.494.495.540.574.609.864.981.1029.1048.1051.1095.1097.1126.1205.1276.1301.1365.1415.1449.1514.1570.1577.1598.1651.1716.1735.1753.1765.1870.1878.1889.1958.1960.2072.2253.2299.2373.2415.2506.2526.2531.2568.2571.2575.2624.2677.2778~dv.%22%2C%225A1352F8-73C9-468F-B5D0-20CA6E1901BE%22%5D%5D; OptanonAlertBoxClosed=2025-03-27T13:33:04.433Z; _fbp=fb.1.1743082384542.726500928889980026; userCategory=RPU; _gcl_au=1.1.1453935977.1743082386; _uetsid=04e039f00b1011f0b12619a0d28f0d1d; _uetvid=04e06ba00b1011f0935133c74986882c; _clck=zqkhzg%7C2%7Cfuk%7C1%7C1912; _clsk=1iirubf%7C1743082390547%7C1%7C1%7Cl.clarity.ms%2Fcollect; nlbi_242093_2147483392=YJnJIIOxYRcoAPiFie/jegAAAABveNZrbZEdm0GLs5SGiejt; OptanonConsent=isGpcEnabled=0&datestamp=Thu+Mar+27+2025+16%3A33%3A11+GMT%2B0300+(%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C+%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B5+%D0%B2%D1%80%D0%B5%D0%BC%D1%8F)&version=202403.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=f398a967-632a-4d3d-9f55-6968091db2dc&interactionCount=2&isAnonUser=1&landingPath=NotLandingPage&groups=C0002%3A1%2CC0003%3A1%2CC0001%3A1%2CC0004%3A1&geolocation=PL%3B14&AwaitingReconsent=false; fs_lua=1.1743082391872; fs_uid=#o-76DP-eu1#d564d5fc-903e-48b1-a031-8cba59e269bc:6b2da63e-2f44-4417-a20a-08e4fa3ee781:1743082385188::2#/1774618389; copartTimezonePref=%7B%22displayStr%22%3A%22GMT%2B3%22%2C%22offset%22%3A3%2C%22dst%22%3Afalse%2C%22windowsTz%22%3A%22Europe%2FMinsk%22%7D',
     }
 
     copart_car_headers = {
@@ -72,10 +72,10 @@ class BasicParser:
         "sec-ch-ua-platform": '"macOS"',
         "sec-fetch-dest": "document",
         "sec-fetch-mode": "navigate",
-        "sec-fetch-site": "same-origin",
+        "sec-fetch-site": "none",
         "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
         "user-agent": UserAgent().random,
-        # 'cookie': 'anonymousCrmId=502c4ba2-bf72-4d10-9994-18f51eccab08; ConstructorioID_client_id=d3da21ae-9127-4417-b031-1fc912a7fdbd; FCCDCF=%5Bnull%2Cnull%2Cnull%2C%5B%22CQNBgcAQNBgcAEsACBENBdFoAP_gAEPgACiQINJD7C7FbSFCwH5zaLsAMAhHRsAAQoQAAASBAmABQAKQIAQCgkAYFASgBAACAAAAICRBIQIECAAAAUAAQAAAAAAEAAAAAAAIIAAAgAEAAAAIAAACAIAAEAAIAAAAEAAAmAgAAIIACAAAgAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAQNVSD2F2K2kKFkPCmwXYAYBCujYAAhQgAAAkCBMACgAUgQAgFJIAgCIFAAAAAAAAAQEiCQAAQABAAAIACgAAAAAAIAAAAAAAQQAABAAIAAAAAAAAEAQAAIAAQAAAAIAABEhAAAQQAEAAAAAAAQAAA%22%2C%222~70.89.93.108.122.149.184.196.236.259.311.313.323.358.415.442.486.494.495.540.574.609.864.981.1029.1048.1051.1095.1097.1126.1205.1276.1301.1365.1415.1449.1514.1570.1577.1598.1651.1716.1735.1753.1765.1870.1878.1889.1958.1960.2072.2253.2299.2373.2415.2506.2526.2531.2568.2571.2575.2624.2677.2778~dv.%22%2C%2292B10883-BCCB-4835-9E4A-F4E1AA293EF3%22%5D%5D; lhnContact=c497a657-1abc-495b-b8ee-a4e69d9d12fe-22724-KZgGFFL; lhnContact=c497a657-1abc-495b-b8ee-a4e69d9d12fe-22724-KZgGFFL; OptanonAlertBoxClosed=2025-02-18T10:19:01.083Z; userCategory=RPU; _gcl_au=1.1.819497927.1739873943; QuantumMetricUserID=5122bc6e8a59aaceff19b375435b76fc; OAID=e2cf36cff7053e1927aebda7512c55af; _fbp=fb.1.1741459796480.810031795805533511; _ga=GA1.1.1660701916.1739873943; lhnStorageType=cookie; g2usersessionid=fde404c3ac97ffd921e5b375b9649014; userLang=ru; nlbi_242093=gpuFFB2J3wBCKULzie/jegAAAADTO2bQCZQJYyuixDidsXB9; timezone=Europe%2FMinsk; OAGEO=BY%7CHorad+Minsk%7CMinsk%7C220030%7C53.90005%7C27.5668%7C%7C017%7C%7CUnitary+Enterprise+A1%7CDSL; incap_ses_1288_242093=um0CfZVeFkS+dGrwXeXfEe/v2WcAAAAArsL93XofZI4YD55cij//0w==; incap_ses_519_242093=0QvZS5JIlFgJMk5M89szB32+2mcAAAAAmPGusw0vLVBysTPJt8LJIg==; incap_ses_323_242093=RKnCIiEK02IZzDtwG4d7BOHD2mcAAAAA8Tn38ygzkvkfL0XuUZLNCA==; incap_ses_687_242093=rMMdGRCkhnTOsJgRG7eICf3F2mcAAAAAvrv4clHw2bqyBJ7jD6y36A==; incap_ses_408_242093=xvUnWZ1WTmOBQgYhIYKpBTsU22cAAAAAa6toSRwTQruXVudVKJ3lLQ==; visid_incap_242093=42gLHtSXTq+xU7v4VQp/N4detGcAAAAAREIPAAAAAACAeB67AaesuOQJc5YiNK12q+cGwTFQFx3e; incap_ses_1855_242093=MgNTUQrEAi3dHBg5+0i+Gbsr22cAAAAAbW5s+594/xy/TEJVdSDM1w==; incap_ses_875_242093=i6mvDrOM+kxbO5PGGaAkDMIu22cAAAAArn7eY0k/E8uzC5QhCzGNLw==; _clck=1h0z4o8%7C2%7Cfud%7C1%7C1875; incap_ses_688_242093=6dQteLotA2Qyp4Jrl0SMCeDX22cAAAAArxFfqxH60DcJjf+BgKxiTA==; usersessionid=a464acc53ef4b4804afa8864eaa2ad5e; lhnRefresh=2612e1d9-5869-4065-9265-e4eab96c99c4; lhnRefresh=2612e1d9-5869-4065-9265-e4eab96c99c4; lhnJWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ2aXNpdG9yIiwiZG9tYWluIjoiIiwiZXhwIjoxNzQyNTU0MDQxLCJpYXQiOjE3NDI0Njc2NDEsImlzcyI6eyJhcHAiOiJqc19zZGsiLCJjbGllbnQiOjIyNzI0LCJjbGllbnRfbGV2ZWwiOiJiYXNpYyIsImxobnhfZmVhdHVyZXMiOltdLCJ2aXNpdG9yX3RyYWNraW5nIjp0cnVlfSwianRpIjoiYzQ5N2E2NTctMWFiYy00OTViLWI4ZWUtYTRlNjlkOWQxMmZlIiwicmVzb3VyY2UiOnsiaWQiOiJjNDk3YTY1Ny0xYWJjLTQ5NWItYjhlZS1hNGU2OWQ5ZDEyZmUtMjI3MjQtS1pnR0ZGTCIsInR5cGUiOiJFbGl4aXIuTGhuRGIuTW9kZWwuQ29yZS5WaXNpdG9yIn19.3IJgtrLZ6Fx9PDBOKmpJbQ39on02X3MOGJ6t5hDZVpo; lhnJWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ2aXNpdG9yIiwiZG9tYWluIjoiIiwiZXhwIjoxNzQyNTU0MDQxLCJpYXQiOjE3NDI0Njc2NDEsImlzcyI6eyJhcHAiOiJqc19zZGsiLCJjbGllbnQiOjIyNzI0LCJjbGllbnRfbGV2ZWwiOiJiYXNpYyIsImxobnhfZmVhdHVyZXMiOltdLCJ2aXNpdG9yX3RyYWNraW5nIjp0cnVlfSwianRpIjoiYzQ5N2E2NTctMWFiYy00OTViLWI4ZWUtYTRlNjlkOWQxMmZlIiwicmVzb3VyY2UiOnsiaWQiOiJjNDk3YTY1Ny0xYWJjLTQ5NWItYjhlZS1hNGU2OWQ5ZDEyZmUtMjI3MjQtS1pnR0ZGTCIsInR5cGUiOiJFbGl4aXIuTGhuRGIuTW9kZWwuQ29yZS5WaXNpdG9yIn19.3IJgtrLZ6Fx9PDBOKmpJbQ39on02X3MOGJ6t5hDZVpo; incap_ses_689_242093=Fl54RtYPEEvF93EMFtKPCbb122cAAAAABWWT6z1gvV73vwFZgM11Nw==; g2app.search-table-rows=20; incap_ses_878_242093=AbufCHvq1QpAxvNfjEgvDBAa3GcAAAAAczGGzL7MvIHSFQz95Px7SA==; G2JSESSIONID=A0422994A132096285C3DCFCA1914ACE-n1; incap_ses_686_242093=02HbTL9QQlsveiFwnCmFCfxk3GcAAAAAB36DYggaJ+RNCtBIiK58kg==; incap_ses_1784_242093=8AxXaFrZZi1rndenFQvCGD1p3GcAAAAAGmAwqfmdOXAtkaNBTke8Zg==; lhnAutoInviteShown=true; lhnAutoInviteShown=true; incap_ses_767_242093=fwcERlT3cWceDCWdoO6kCnxs3GcAAAAAxHKlymY7gOtlFWvtLHiYtQ==; reese84=3:Dtho1fcquZhQVfkLLd3/iA==:obX5phx99hk+EnRXV1ndNsOnH1l3rNcmnnrG134/ykn+mzCqMALj4NnGtWh/yVbWEqYzfGWG8oyhSA8jhUlGHh3VDTx1zVNPR4xoFWyZd6X6MMqByyVZp0nZ7uRWA+tloByDwmIX3iH65NSsKJp8TAdy77ge7iU+jashOrjK6sJN5vnkaxJh3wHrnRVVVIhTzfIHh5uo+sAbp+dcCYelbmpCnCS7ph/EbiB8ac8AzGc0A5XhvRSYBTX+T7sQoaOD146jlzRP3iDG+LbmC6C6jN+lkqKPj0dFcGAVHa6j1pte7LfyRvHcCL8b9+7zg5isRZ2SLRl02DCY7RFqG1rd3PWrR4zxx7fHwf0x6hB0kAD1eLq/Bii3e+NE/XjnV6ajDdsLnvy8U11e5QNST8giXHlgfxAmRR+odvFRon4jdUHz1+FCUO1wDpvBcICYGY1nK8UCyBAB9yC4GX7Rv12xbw==:guCGGdszhNiwixFjdl7MujNMFRqUhlPMsLdpB+/a+5w=; nlbi_242093_2147483392=LK1GIvAXhVr8JZTjie/jegAAAADOc3u3C6vFvK3O9PFYUI+B; OptanonConsent=isGpcEnabled=0&datestamp=Thu+Mar+20+2025+22%3A33%3A22+GMT%2B0300+(%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C+%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B5+%D0%B2%D1%80%D0%B5%D0%BC%D1%8F)&version=202403.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=7e8993d0-50d3-4134-a211-8d3c2bf70f71&interactionCount=2&isAnonUser=1&landingPath=NotLandingPage&groups=C0002%3A1%2CC0003%3A1%2CC0001%3A1%2CC0004%3A1&geolocation=PL%3B14&AwaitingReconsent=false; copartTimezonePref=%7B%22displayStr%22%3A%22GMT%2B3%22%2C%22offset%22%3A3%2C%22dst%22%3Afalse%2C%22windowsTz%22%3A%22Europe%2FMinsk%22%7D; fs_lua=1.1742499202614; fs_uid=#o-76DP-eu1#5da23651-3c20-4a22-b19b-2125b38e0c7f:122d04db-e8c4-4d11-947b-c4f487f444dc:1742498128899::2#/1774034132; _uetsid=b2551000057811f096425d8c4517e736; _uetvid=c35ed8b0ede111ef98f093688546df36; __gads=ID=cf5ad59ad3ace006:T=1741459885:RT=1742499205:S=ALNI_MZjArYOTIPAt4LMHvt0LKGxcqTQKw; __gpi=UID=000010576a3d7728:T=1741459885:RT=1742499205:S=ALNI_Mat39uljX_Mo2AZpyUHpZ9KIZ29bQ; __eoi=ID=a125d77db2fd6c4c:T=1741459885:RT=1742499205:S=AA-AfjYMyrazVKWOueGYhyDege3C; FCNEC=%5B%5B%22AKsRol-JmsYd8q79GGBOQr7YNBdYlQ1Gv8C30JZN8mQsRSsW-QEZRJhG9i5rrwMItIG8hX34gTooTmY1sJuINBlc8eHa_slC1aOqM8dYV8vUB5bRW2odGlEHV7qnUZQ4DAKBp96-Ja4gK5h2kfefX75EubpjS4aagA%3D%3D%22%5D%5D; _clsk=1utiy8l%7C1742499233321%7C6%7C0%7Cv.clarity.ms%2Fcollect; _ga_VMJJLGQLHF=GS1.1.1742498130.15.1.1742499243.18.0.0',
     }
 
     def __init__(self):
@@ -154,7 +154,7 @@ class BasicParser:
             "https://www.copart.com/", ssl=False, headers=self.copart_main_page_headers
         ) as response:
             self.logger.info(f"Get cookies status: {response.status}")
-            # cookies = response.cookies
+            cookies = response.cookies
 
         json_data = {
             "lotNumber": lot_id,
@@ -166,7 +166,7 @@ class BasicParser:
                 url=self.copart_lot_images_url,
                 ssl=False,
                 headers=self.copart_image_headers,
-                # cookies=cookies,
+                cookies=cookies,
                 proxy=PROXY_URL if proxy else None,
                 json=json_data,
             ) as response:
@@ -179,9 +179,30 @@ class BasicParser:
 
     async def get_copart_json(self, copart_url: str, referer: str, proxy: bool):
         # async with self._session.get(
-        #     "https://www.copart.com/", ssl=False, headers=self.copart_headers
+        #     "https://www.copart.com/", ssl=False, headers=self.copart_main_page_headers
         # ) as response:
         #     cookies = response.cookies
+        #     print(cookies)
+
+        # todo посомтри где взять эит куки
+        cookies = {
+            "incap_ses_323_242093": "V/9iftmf5mtMs3K/HYd7BCsB62cAAAAAbLRG11EPY+qKsFNAAiVJcQ==",
+            "incap_sh_242093": "jgHrZwAAAAA5Jg4tBgAIjoOsvwZvKcV7Tcz16NizBuHcnpVS",
+            "g2usersessionid": "57546ecd068d15a49a663b44694f4609",
+            "G2JSESSIONID": "01D76D014F98B849A668D59B6E6AD2A0-n1",
+            "userLang": "en",
+            "anonymousCrmId": "d0c5c31b-2b8c-45b9-af8a-60d8cd1f124b",
+            "visid_incap_242093": "FpZY3cvnQzW4tqKkkVGgBCsB62cAAAAAQkIPAAAAAACAKGK7AUCwSL0aXiX2ndzLd0tYIzM2yA35",
+            "nlbi_242093": "djWQeF85PRpaZ4hBie/jegAAAADUmdhObR1NFvT+o2H1DCss",
+            "userCategory": "PU",
+            "OptanonConsent": "isGpcEnabled=0&datestamp=Mon+Mar+31+2025+23%3A56%3A48+GMT%2B0300+(%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C+%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B5+%D0%B2%D1%80%D0%B5%D0%BC%D1%8F)&version=202403.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=36a8eb5b-cf1d-45d0-98e1-603212354663&interactionCount=0&isAnonUser=1&landingPath=https%3A%2F%2Fwww.copart.com%2F&groups=C0002%3A0%2CC0003%3A0%2CC0001%3A1%2CC0004%3A0",
+            "timezone": "Europe%2FMinsk",
+            "copartTimezonePref": "%7B%22displayStr%22%3A%22GMT%2B3%22%2C%22offset%22%3A3%2C%22dst%22%3Afalse%2C%22windowsTz%22%3A%22Europe%2FMinsk%22%7D",
+            "lhnStorageType": "cookie",
+            "lhnContact": "82796681-9dd6-40df-ae73-7da379d3f930-22724-JlnDsM2",
+            "nlbi_242093_2147483392": "EvZgQcfM5QIxw4j2ie/jegAAAACEhemVR4njbrHModJq9Nlv",
+            "reese84": "3:WVyWXaR6nrD6fNYLF3BQvA==:OyNQPeHH5E74i1Ba/r8qBWKr+fjDLevmo1Mc3ZeYSfrgETdl4MgdWcBMwMkE+19snCylJvcAy6SgkdnIq4b+2uFIGJPVl5+kgxSvjmrTNmKBT659D6JJtuURoUU7GMNSGh0BOuxysEB3FrM6TW29s5wrxQJ2z8Fcmum5X/V4B80tVed9go8b5egDGlNdDdUZoG30ps1dN5DTKuqoV79BP7xhUsqqD9QaaJTliA5bKs8T204yR/RAqFQ9qIeCfcxJuhmtYg2nqita7hBzOM9DNk6/OlO1if2SX2eKMc6mj5P2ppZAW/uHM5W1YIz4VBRXXZcPFZnNqu04ykKkHwFip04dccINOdZw66Zdlc2g/vR/ZYhrqf0PnQkOdGOCQ0Ltg3ZE3EYEow3rWqnfncH/mR+EQ8HLT5OpwvmROGJOrjWXuZ6NkBZZbzbLeiQejZFCaXSsYPbq41oalsrDyVPqp9yZxeGHDg9lWtvEPZ4Df6s=:nlQcgTg2Pm6mit4LJHaIA661GJiokIxsAuseH67qUFA=",
+        }
 
         self.copart_car_headers["referer"] = referer
         try:
@@ -189,7 +210,7 @@ class BasicParser:
                 copart_url,
                 ssl=False,
                 headers=self.copart_car_headers,
-                # cookies=cookies,
+                cookies=cookies,
                 proxy=PROXY_URL if proxy else None,
             ) as response:
                 data = await response.json()
@@ -240,3 +261,34 @@ class BasicParser:
     async def get_current_curse(self):
         current_curse_data = await self.get_json(usd_url=True)
         return current_curse_data["Cur_OfficialRate"]
+
+    async def get_url_for_iaai(self, payload: str):
+        await self.get_session()
+        params = {
+            "Keyword": payload,
+        }
+        try:
+            async with self._session.get(
+                "https://www.iaai.com/Search?", ssl=False, params=params
+            ) as response:
+                await self.close_session()
+                return response.url
+        except Exception as e:
+            await self.close_session()
+            self.logger.warning(e)
+            return False
+
+
+# async def main():
+#     a = BasicParser()
+#     await a.get_session()
+#     b = await a.get_copart_json(
+#         copart_url="https://www.copart.com/public/data/lotdetails/solr/49845435",
+#         proxy=False,
+#         referer="https://www.copart.com/lot/49845435/clean-title-2024-bmw-228i-fl-miami-north",
+#     )
+#     await a.close_session()
+#     print(b)
+#
+#
+# asyncio.run(main())
