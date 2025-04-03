@@ -15,8 +15,9 @@ class BidCars(BasicParser):
         car = None
         lot = self.url.split("/")[5].split("-")[0]
         if lot == "0":
+            payload = self.url.split("/")[5].split("-")[1]
             # iaai
-            iaai_url = await self.get_url_for_iaai(payload="41546549")
+            iaai_url = await self.get_url_for_iaai(payload=payload)
             car = await IaaiParser(iaai_url=str(iaai_url)).get_data()
 
         if lot == "1":
