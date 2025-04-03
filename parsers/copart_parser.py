@@ -72,6 +72,10 @@ class CopartParser(BasicParser):
         if "rs" in model.lower():
             if "q8" in car_data["data"]["lotDetails"]["lm"]:
                 model = "rs-q8"
+        if "crv" in model.lower():
+            model = model.lower().replace("crv", "cr-v")
+        if "s60" in model.lower():
+            model = "s60"
 
         return AuctionCar(
             brand=brand,
