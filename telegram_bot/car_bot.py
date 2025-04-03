@@ -80,7 +80,7 @@ class CarBot(BaseBot):
             await state.clear()
             return
 
-        await self.bot.process_final_car_data(
+        await self.process_final_car_data(
             message=message,
             auction_car=car,
             state=state,
