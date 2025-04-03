@@ -40,8 +40,10 @@ class IaaiParser(BasicParser):
             return False
         engine = float(dirty_engine.split(" ")[0].lower().replace("l", ""))
 
-        if "SERIES" in brand.lower():
+        if "SERIES" in model.lower():
             model = model.lower().replace("series", "seriya").replace(" ", "-")
+        if "v60 cross country" in model.lower():
+            model = "v60-cross-country"
 
         await self.close_session()
         return AuctionCar(
