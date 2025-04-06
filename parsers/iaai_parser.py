@@ -44,6 +44,12 @@ class IaaiParser(BasicParser):
             model = model.lower().replace("series", "seriya").replace(" ", "-")
         if "v60 cross country" in model.lower():
             model = "v60-cross-country"
+        if "q5" in model.lower():
+            model = "q5"
+        if "5" in model.lower() and model.lower() != "q5":
+            model = "5-seriya"
+        if "3" in model.lower():
+            model = "3-seriya"
 
         await self.close_session()
         return AuctionCar(
