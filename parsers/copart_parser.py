@@ -76,6 +76,8 @@ class CopartParser(BasicParser):
             model = model.lower().replace("crv", "cr-v")
         if "s60" in model.lower():
             model = "s60"
+        if "xc60" in model.lower():
+            model = "xc60"
 
         return AuctionCar(
             brand=brand,
