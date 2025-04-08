@@ -48,7 +48,7 @@ class IaaiParser(BasicParser):
             model = "q5"
         if "5" in model.lower() and model.lower() != "q5":
             model = "5-seriya"
-        if "3" in model.lower():
+        if "3" in model.lower() and model.lower() != "glc 300":
             model = "3-seriya"
 
         await self.close_session()
