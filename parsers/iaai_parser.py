@@ -50,6 +50,8 @@ class IaaiParser(BasicParser):
             model = "5-seriya"
         if "3" in model.lower() and model.lower() != "glc 300":
             model = "3-seriya"
+        if "glc 300" in model.lower():
+            model = "glc"
 
         await self.close_session()
         return AuctionCar(
