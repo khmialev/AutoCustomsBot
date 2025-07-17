@@ -226,7 +226,7 @@ class BaseBot:
             lines.append(
                 "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>"
             )
-        if datetime.datetime.now().year - web_car.year >= 5:
+        if datetime.datetime.now().year - web_car.year == 5:
             lines.append(
                 "⚠️ <b>Возможно, пока автомобиль будет в пути, он попадёт в категорию « СТАРШЕ 5 лет».</b>"
             )
