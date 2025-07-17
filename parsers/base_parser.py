@@ -1,4 +1,5 @@
 import asyncio
+import json
 from random import uniform
 
 import aiohttp
@@ -9,12 +10,14 @@ from sqlalchemy.util import await_only
 import Logger
 from Logger import MyLogger
 from config import BASE_URL, USD_URL, PROXY_URL, COPART_LOT_IMAGES_URL
+from parsers.selenium_hundler import DriverManager
 
 
 class BasicParser:
     base_url = BASE_URL
     ua = UserAgent().random
     copart_lot_images_url = COPART_LOT_IMAGES_URL
+    slenium_driver = DriverManager(ua=ua)
 
     av_headers = {
         "accept": "*/*",
@@ -176,7 +179,14 @@ class BasicParser:
         except Exception as e:
             self.logger.warning(f"Error on get copart images json: {e}")
             return False
-
+    async def get_through_selenium(self, copart_url:str):
+        driver = await self.slenium_driver.get_driver(copart_url)
+        try:
+            json_text = driver.find_element("tag name", "pre").text
+            return json.loads(json_text)
+        except Exception as e:
+            self.logger.warning(f"Error on get copart car json THROUGH SELENIUM : {e}")
+            return False
     async def get_copart_json(self, copart_url: str, referer: str, proxy: bool):
         # async with self._session.get(
         #     "https://www.copart.com/", ssl=False, headers=self.copart_main_page_headers
@@ -185,24 +195,24 @@ class BasicParser:
         #     print(cookies)
 
         # todo посомтри где взять эит куки
-        cookies = {
-            "incap_ses_323_242093": "V/9iftmf5mtMs3K/HYd7BCsB62cAAAAAbLRG11EPY+qKsFNAAiVJcQ==",
-            "incap_sh_242093": "jgHrZwAAAAA5Jg4tBgAIjoOsvwZvKcV7Tcz16NizBuHcnpVS",
-            "g2usersessionid": "57546ecd068d15a49a663b44694f4609",
-            "G2JSESSIONID": "01D76D014F98B849A668D59B6E6AD2A0-n1",
-            "userLang": "en",
-            "anonymousCrmId": "d0c5c31b-2b8c-45b9-af8a-60d8cd1f124b",
-            "visid_incap_242093": "FpZY3cvnQzW4tqKkkVGgBCsB62cAAAAAQkIPAAAAAACAKGK7AUCwSL0aXiX2ndzLd0tYIzM2yA35",
-            "nlbi_242093": "djWQeF85PRpaZ4hBie/jegAAAADUmdhObR1NFvT+o2H1DCss",
-            "userCategory": "PU",
-            "OptanonConsent": "isGpcEnabled=0&datestamp=Mon+Mar+31+2025+23%3A56%3A48+GMT%2B0300+(%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C+%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B5+%D0%B2%D1%80%D0%B5%D0%BC%D1%8F)&version=202403.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=36a8eb5b-cf1d-45d0-98e1-603212354663&interactionCount=0&isAnonUser=1&landingPath=https%3A%2F%2Fwww.copart.com%2F&groups=C0002%3A0%2CC0003%3A0%2CC0001%3A1%2CC0004%3A0",
-            "timezone": "Europe%2FMinsk",
-            "copartTimezonePref": "%7B%22displayStr%22%3A%22GMT%2B3%22%2C%22offset%22%3A3%2C%22dst%22%3Afalse%2C%22windowsTz%22%3A%22Europe%2FMinsk%22%7D",
-            "lhnStorageType": "cookie",
-            "lhnContact": "82796681-9dd6-40df-ae73-7da379d3f930-22724-JlnDsM2",
-            "nlbi_242093_2147483392": "EvZgQcfM5QIxw4j2ie/jegAAAACEhemVR4njbrHModJq9Nlv",
-            "reese84": "3:WVyWXaR6nrD6fNYLF3BQvA==:OyNQPeHH5E74i1Ba/r8qBWKr+fjDLevmo1Mc3ZeYSfrgETdl4MgdWcBMwMkE+19snCylJvcAy6SgkdnIq4b+2uFIGJPVl5+kgxSvjmrTNmKBT659D6JJtuURoUU7GMNSGh0BOuxysEB3FrM6TW29s5wrxQJ2z8Fcmum5X/V4B80tVed9go8b5egDGlNdDdUZoG30ps1dN5DTKuqoV79BP7xhUsqqD9QaaJTliA5bKs8T204yR/RAqFQ9qIeCfcxJuhmtYg2nqita7hBzOM9DNk6/OlO1if2SX2eKMc6mj5P2ppZAW/uHM5W1YIz4VBRXXZcPFZnNqu04ykKkHwFip04dccINOdZw66Zdlc2g/vR/ZYhrqf0PnQkOdGOCQ0Ltg3ZE3EYEow3rWqnfncH/mR+EQ8HLT5OpwvmROGJOrjWXuZ6NkBZZbzbLeiQejZFCaXSsYPbq41oalsrDyVPqp9yZxeGHDg9lWtvEPZ4Df6s=:nlQcgTg2Pm6mit4LJHaIA661GJiokIxsAuseH67qUFA=",
-        }
+        # cookies = {
+        #     "incap_ses_323_242093": "V/9iftmf5mtMs3K/HYd7BCsB62cAAAAAbLRG11EPY+qKsFNAAiVJcQ==",
+        #     "incap_sh_242093": "jgHrZwAAAAA5Jg4tBgAIjoOsvwZvKcV7Tcz16NizBuHcnpVS",
+        #     "g2usersessionid": "57546ecd068d15a49a663b44694f4609",
+        #     "G2JSESSIONID": "01D76D014F98B849A668D59B6E6AD2A0-n1",
+        #     "userLang": "en",
+        #     "anonymousCrmId": "d0c5c31b-2b8c-45b9-af8a-60d8cd1f124b",
+        #     "visid_incap_242093": "FpZY3cvnQzW4tqKkkVGgBCsB62cAAAAAQkIPAAAAAACAKGK7AUCwSL0aXiX2ndzLd0tYIzM2yA35",
+        #     "nlbi_242093": "djWQeF85PRpaZ4hBie/jegAAAADUmdhObR1NFvT+o2H1DCss",
+        #     "userCategory": "PU",
+        #     "OptanonConsent": "isGpcEnabled=0&datestamp=Mon+Mar+31+2025+23%3A56%3A48+GMT%2B0300+(%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C+%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B5+%D0%B2%D1%80%D0%B5%D0%BC%D1%8F)&version=202403.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=36a8eb5b-cf1d-45d0-98e1-603212354663&interactionCount=0&isAnonUser=1&landingPath=https%3A%2F%2Fwww.copart.com%2F&groups=C0002%3A0%2CC0003%3A0%2CC0001%3A1%2CC0004%3A0",
+        #     "timezone": "Europe%2FMinsk",
+        #     "copartTimezonePref": "%7B%22displayStr%22%3A%22GMT%2B3%22%2C%22offset%22%3A3%2C%22dst%22%3Afalse%2C%22windowsTz%22%3A%22Europe%2FMinsk%22%7D",
+        #     "lhnStorageType": "cookie",
+        #     "lhnContact": "82796681-9dd6-40df-ae73-7da379d3f930-22724-JlnDsM2",
+        #     "nlbi_242093_2147483392": "EvZgQcfM5QIxw4j2ie/jegAAAACEhemVR4njbrHModJq9Nlv",
+        #     "reese84": "3:WVyWXaR6nrD6fNYLF3BQvA==:OyNQPeHH5E74i1Ba/r8qBWKr+fjDLevmo1Mc3ZeYSfrgETdl4MgdWcBMwMkE+19snCylJvcAy6SgkdnIq4b+2uFIGJPVl5+kgxSvjmrTNmKBT659D6JJtuURoUU7GMNSGh0BOuxysEB3FrM6TW29s5wrxQJ2z8Fcmum5X/V4B80tVed9go8b5egDGlNdDdUZoG30ps1dN5DTKuqoV79BP7xhUsqqD9QaaJTliA5bKs8T204yR/RAqFQ9qIeCfcxJuhmtYg2nqita7hBzOM9DNk6/OlO1if2SX2eKMc6mj5P2ppZAW/uHM5W1YIz4VBRXXZcPFZnNqu04ykKkHwFip04dccINOdZw66Zdlc2g/vR/ZYhrqf0PnQkOdGOCQ0Ltg3ZE3EYEow3rWqnfncH/mR+EQ8HLT5OpwvmROGJOrjWXuZ6NkBZZbzbLeiQejZFCaXSsYPbq41oalsrDyVPqp9yZxeGHDg9lWtvEPZ4Df6s=:nlQcgTg2Pm6mit4LJHaIA661GJiokIxsAuseH67qUFA=",
+        # }
 
         self.copart_car_headers["referer"] = referer
         try:
@@ -210,13 +220,17 @@ class BasicParser:
                 copart_url,
                 ssl=False,
                 headers=self.copart_car_headers,
-                cookies=cookies,
+                # cookies=cookies,
                 proxy=PROXY_URL if proxy else None,
             ) as response:
                 data = await response.json()
                 self.logger.info("Success get copart car json")
                 return data
         except Exception as e:
+            data = await self.get_through_selenium(copart_url=copart_url)
+            await self.slenium_driver.close_driver()
+            if data:
+                return data
             self.logger.warning(f"Error on get copart car json: {e}")
             return False
 
