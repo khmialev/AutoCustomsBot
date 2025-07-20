@@ -12,6 +12,24 @@ class DataBaseService(DataBaseConnection):
             await conn.run_sync(self.Base.metadata.create_all)
             await conn.commit()
 
+    async def get_years(self, brand: str, model: str):
+        async for session in self.get_session:
+            stmt = (
+                select(Car.generation, Car.year_from, Car.year_to)
+                .where(Car.brand == brand, Car.model == model)
+                .order_by(Car.year_from)
+            )
+            result = await session.execute(stmt)
+            rows = result.all()
+            return [
+                {
+                    "generation": row.generation,
+                    "year_from": row.year_from,
+                    "year_to": row.year_to,
+                }
+                for row in rows
+            ]
+
     async def save_car_data(self, car_data):
         async for session in self.get_session:
             stmt = (
