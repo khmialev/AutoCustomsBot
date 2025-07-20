@@ -1,20 +1,25 @@
 import asyncio
 import json
-from random import uniform
 
 import aiohttp
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-from sqlalchemy.util import await_only
 
 import Logger
 from Logger import MyLogger
-from config import BASE_URL, USD_URL, PROXY_URL, COPART_LOT_IMAGES_URL
+from config import (
+    BASE_URL,
+    USD_URL,
+    PROXY_URL,
+    COPART_LOT_IMAGES_URL,
+    BID_CARS_TRACKING_URL,
+)
 from parsers.selenium_hundler import DriverManager
 
 
 class BasicParser:
     base_url = BASE_URL
+    tracking_bid_cars_url = BID_CARS_TRACKING_URL
     ua = UserAgent().random
     copart_lot_images_url = COPART_LOT_IMAGES_URL
     slenium_driver = DriverManager(ua=ua)
@@ -179,7 +184,8 @@ class BasicParser:
         except Exception as e:
             self.logger.warning(f"Error on get copart images json: {e}")
             return False
-    async def get_through_selenium(self, copart_url:str):
+
+    async def get_through_selenium(self, copart_url: str):
         driver = await self.slenium_driver.get_driver(copart_url)
         try:
             json_text = driver.find_element("tag name", "pre").text
@@ -187,6 +193,7 @@ class BasicParser:
         except Exception as e:
             self.logger.warning(f"Error on get copart car json THROUGH SELENIUM : {e}")
             return False
+
     async def get_copart_json(self, copart_url: str, referer: str, proxy: bool):
         # async with self._session.get(
         #     "https://www.copart.com/", ssl=False, headers=self.copart_main_page_headers
@@ -291,6 +298,30 @@ class BasicParser:
             await self.close_session()
             self.logger.warning(e)
             return False
+
+    async def get_data_tracking_bid_cars(
+        self, brand: str, model: str, year_from: str, year_to: str
+    ):
+        await self.get_session()
+        url = (
+            self.tracking_bid_cars_url.replace("BRAND", brand)
+            .replace("MODEL", model)
+            .replace("YEAR_FROM", year_from)
+            .replace("YEAR_TO", year_to)
+        )
+        async with self._session.get(url, ssl=False) as response:
+            html = await response.text()
+            soup = BeautifulSoup(html, "lxml")
+            table = soup.find("div", {"id": "search_area"}).find_all(
+                "div", _class="item-horizontal lots-search "
+            )
+            for element in table:
+                wrapper = element.find("div", _class="wrapper").find(
+                    "span", _class="vin_title"
+                )
+                print(wrapper)
+
+            print(soup)
 
 
 # async def main():
