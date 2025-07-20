@@ -50,12 +50,12 @@ class ManualSpecCalculator:
         """Специальный расчет, получаем бренд"""
 
         brand = call.data.split("_")[1]
-        self.bot.car_models = await self.bot.db.get_models(brand=brand.lower())
+        car_models = await self.bot.db.get_models(brand=brand.lower())
         await state.update_data({"brand": brand})
         await call.message.edit_text(
             "✏️ <b>Выберите модель бренда:</b> ",
             parse_mode="HTML",
-            reply_markup=await self.bot._create_models_keyboards(),
+            reply_markup=await self.bot._create_models_keyboards(car_models=car_models),
         )
         await state.set_state(ManualSpecCalcStates.waiting_for_model)
         await call.answer()
