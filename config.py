@@ -30,6 +30,8 @@ COPART_MAIN_URL = os.getenv("COPART_MAIN_URL")
 IAAI_URL = os.getenv("IAAI_URL")
 IMAGE_URL = os.getenv("IMAGE_URL")
 
+BID_CARS_TRACKING_URL = os.getenv("BID_CARS_TRACKING_URL")
+
 EURO_USD = os.getenv("EURO_USD")
 TOKEN = os.getenv("TOKEN")
 
