@@ -4,7 +4,7 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from models.fsm_states import TrackingBidCars
-from parsers.tracking_bid_cars import TrackingBidCarsParser
+from parsers.tracking_bid_cars_parser import TrackingBidCarsParser
 
 
 class BidCarsTracking:
