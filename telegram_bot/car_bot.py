@@ -16,6 +16,7 @@ from telegram_bot.copart_url_calculator import CopartUrlCalculator
 from telegram_bot.iaai_url_calculator import IaaiUrlCalculator
 from telegram_bot.manual_basic_calculator import ManualBasicCalculator
 from telegram_bot.manual_spec_calculator import ManualSpecCalculator
+from telegram_bot.tracikng_bidcars import BidCarsTracking
 from telegram_bot.update_db_handler import UpdateDBHandler
 
 
@@ -24,6 +25,7 @@ class CarBot(BaseBot):
         super().__init__()
         self.av_parser: AVParser = AVParser()
 
+        self.tracking_bidcars = BidCarsTracking(self)
         self.update_db_handler = UpdateDBHandler(self)
         self.copart_url_calculator = CopartUrlCalculator(self)
         self.iaai = IaaiUrlCalculator(self)
