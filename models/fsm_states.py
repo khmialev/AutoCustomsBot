@@ -27,3 +27,9 @@ class ManualSpecCalcStates(StatesGroup):
     waiting_for_model = State()
     waiting_for_engine = State()
     waiting_for_year = State()
+
+
+class TrackingBidCars(StatesGroup):
+    waiting_for_model = State()
+    waiting_for_year = State()
+    waiting_for_generation = State()
