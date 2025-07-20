@@ -25,13 +25,26 @@ class BaseBot:
         self.euro_usd: float = float(EURO_USD)
         self.db: DataBaseService = DataBaseService()
         self.car_brands = brands
-        self.car_models: list[Car] = []
 
-    async def _create_models_keyboards(self):
+    async def _create_years_keyboard(self, years: dict):
+        buttons = []
+
+        for data in years:
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        text=f"Поколение: {data['generation'].upper()}",
+                        callback_data=f"{data['year_from']}_{data['year_to']}",
+                    )
+                ]
+            )
+        return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+    async def _create_models_keyboards(self, car_models: list):
         """Кнопки для выбора модели авто"""
 
         buttons = []
-        for model in self.car_models:
+        for model in car_models:
             buttons.append(
                 [
                     InlineKeyboardButton(
@@ -104,6 +117,7 @@ class BaseBot:
                 "Расчет по ссылке с BidCars",
             ],
             ["Обновить БД с ценами (av.by)", "Расчет по данным"],
+            ["Отслеживать авто с BidCars"],
         ]
 
         keyboard = ReplyKeyboardMarkup(
