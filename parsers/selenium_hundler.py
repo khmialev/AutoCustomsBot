@@ -29,7 +29,17 @@ class DriverManager:
             "--window-size=1920,1080"
         )  # Задаем размер окна (рекомендуется для headless режима)
         driver = webdriver.Chrome(options=o)
-        # driver.maximize_window()
+
+        driver.execute_cdp_cmd(
+            "Page.addScriptToEvaluateOnNewDocument",
+            {
+                "source": """
+                   Object.defineProperty(navigator, 'webdriver', {
+                       get: () => undefined
+                   })
+               """
+            },
+        )
         return driver
 
     async def initialize_driver(self):
@@ -50,4 +60,3 @@ class DriverManager:
         if self.driver:
             self.driver.quit()
             self.driver = None  # Освобождаем ресурс
-
