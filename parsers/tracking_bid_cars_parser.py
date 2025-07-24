@@ -34,7 +34,7 @@ class TrackingBidCarsParser(BasicParser):
         year_from,
         year_to,
         on_stop=None,
-        # надо что то думать с филтром бренд и модель потому что есть не совпадение
+        # надо что-то думать с филтром бренд и модель потому что есть не совпадение https://bid.cars/app/search/toolbar-type/automobile может тут надо спарсить?
     ):
         seen_ids = set()
         while True:
