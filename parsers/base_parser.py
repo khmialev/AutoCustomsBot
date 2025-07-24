@@ -13,6 +13,7 @@ from config import (
     COPART_LOT_IMAGES_URL,
     BID_CARS_TRACKING_URL,
 )
+from parsers.playright_manager import PlayRightManager
 from parsers.selenium_hundler import DriverManager
 
 
@@ -22,6 +23,7 @@ class BasicParser:
     ua = UserAgent().random
     copart_lot_images_url = COPART_LOT_IMAGES_URL
     slenium_driver = DriverManager(ua=ua)
+    playright = PlayRightManager()
 
     av_headers = {
         "accept": "*/*",
@@ -298,32 +300,3 @@ class BasicParser:
             self.logger.warning(e)
             return False
 
-    async def get_data_tracking_bid_cars(
-        self, brand: str, model: str, year_from: str, year_to: str
-    ):
-        await self.get_session()
-        url = (
-            self.tracking_bid_cars_url.replace("BRAND", brand)
-            .replace("MODEL", model)
-            .replace("YEAR_FROM", year_from)
-            .replace("YEAR_TO", year_to)
-        )
-
-        driver = await self.slenium_driver.get_driver(url)
-        html = driver.page_source
-        await self.slenium_driver.close_driver()
-        soup = BeautifulSoup(html, "lxml")
-        table = soup.find("div", {"id": "search_area"}).find_all(
-            "div", class_="item-horizontal"
-        )
-        urls = []
-
-        for i in table:
-            url = (
-                i.find("div", class_="wrapper")
-                .find("div", class_="name")
-                .find("a")
-                .get("href")
-            )
-            urls.append(url)
-        return urls
