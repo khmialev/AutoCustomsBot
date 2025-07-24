@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery, Message
 
 from calculation.car_calculator import CalculateLogic
 from models.cars import CalculateCar, AuctionCar
-from models.fsm_states import ManualSpecCalcStates
+from telegram_bot.states.fsm_states import ManualSpecCalcStates
 
 
 class ManualSpecCalculator:

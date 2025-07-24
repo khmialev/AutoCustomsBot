@@ -5,9 +5,8 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from calculation.car_calculator import CalculateLogic
-from models.cars import CalculateCar, AuctionCar
-from models.fsm_states import IaaiCalcStates
+from models.cars import AuctionCar
+from telegram_bot.states.fsm_states import IaaiCalcStates
 from parsers.iaai_parser import IaaiParser
 
 
