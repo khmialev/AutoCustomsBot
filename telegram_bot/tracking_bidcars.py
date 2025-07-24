@@ -1,15 +1,15 @@
-import asyncio
-
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-from models.fsm_states import TrackingBidCars
-from parsers.tracking_bid_cars_parser import TrackingBidCarsParser
+
+from service.tracking_manager import TrackingManager
+from telegram_bot.states.fsm_states import TrackingBidCars
 
 
 class BidCarsTracking:
     def __init__(self, bot):
         self.bot = bot
+        self.tracking_manager = TrackingManager()
 
         self.bot.dp.message.register(
             self.main_process, F.text == "Отслеживать авто с BidCars"
@@ -28,6 +28,9 @@ class BidCarsTracking:
         self.bot.dp.callback_query.register(
             self.process_tracking, TrackingBidCars.waiting_for_generation
         )
+        self.bot.dp.message.register(
+            self.stop_tracking_command, F.text == "🛑 Остановить отслеживание"
+        )
 
     async def main_process(self, message: Message, state: FSMContext):
         await state.clear()
@@ -35,7 +38,7 @@ class BidCarsTracking:
         msg = await message.answer(
             "🟢 <b>СТАРТ ОТСЛЕЖИВАНИЯ</b>\n" "━━━━━━━━━━━━━━━━━━━━\n" "Выберите бренд:",
             parse_mode="HTML",
-            reply_markup=await self.bot._create_brands_keyboard(),
+            reply_markup=await self.bot.keyboards.create_brands_keyboard(),
         )
 
         await state.update_data(tracking_message_id=msg.message_id)
@@ -60,7 +63,7 @@ class BidCarsTracking:
             message_id=msg_id,
             text=text,
             parse_mode="HTML",
-            reply_markup=await self.bot._create_models_keyboards(car_models),
+            reply_markup=await self.bot.keyboards.create_models_keyboards(car_models),
         )
         await call.answer()
         await state.set_state(TrackingBidCars.waiting_for_year)
@@ -87,7 +90,7 @@ class BidCarsTracking:
             message_id=msg_id,
             text=text,
             parse_mode="HTML",
-            reply_markup=await self.bot._create_years_keyboard(generations),
+            reply_markup=await self.bot.keyboards.create_years_keyboard(generations),
         )
         await call.answer()
         await state.set_state(TrackingBidCars.waiting_for_generation)
@@ -115,18 +118,40 @@ class BidCarsTracking:
             parse_mode="HTML",
             reply_markup=None,
         )
-        parser = TrackingBidCarsParser()
-        # todo надо хранить такси с названием что бы потом сделат ькнопку и остнавлаивать их!!!
-        asyncio.create_task(
-            parser.track_cars_for_user(
-                bot=call.bot,
-                user_id=call.from_user.id,
-                chat_id=call.message.chat.id,
-                brand=brand,
-                model=model,
-                year_from=year_from,
-                year_to=year_to,
-            )
-        )
-        await call.answer()
+
         await state.clear()
+        await call.answer()
+        await self.tracking_manager.start_tracking(
+            user_id=call.from_user.id,
+            chat_id=call.message.chat.id,
+            brand=brand,
+            model=model,
+            year_to=year_to,
+            year_from=year_from,
+            bot=call.bot,
+        )
+        await call.message.answer(
+            "✅ Отслеживание запущено!",
+            reply_markup=await self.bot.keyboards.create_main_keyboard(
+                is_tracking=True
+            ),
+        )
+
+    async def stop_tracking_command(self, message: Message):
+        user_id = message.from_user.id
+
+        if self.tracking_manager._is_tracking(user_id):
+            await self.tracking_manager.stop_tracking(user_id)
+            await message.answer(
+                "❌ Отслеживание остановлено.",
+                reply_markup=await self.bot.keyboards.create_main_keyboard(
+                    is_tracking=False
+                ),
+            )
+        else:
+            await message.answer(
+                "ℹ️ У вас нет активного отслеживания.",
+                reply_markup=await self.bot.keyboards.create_main_keyboard(
+                    is_tracking=False
+                ),
+            )
