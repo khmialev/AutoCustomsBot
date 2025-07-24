@@ -16,7 +16,7 @@ from telegram_bot.copart_url_calculator import CopartUrlCalculator
 from telegram_bot.iaai_url_calculator import IaaiUrlCalculator
 from telegram_bot.manual_basic_calculator import ManualBasicCalculator
 from telegram_bot.manual_spec_calculator import ManualSpecCalculator
-from telegram_bot.tracikng_bidcars import BidCarsTracking
+from telegram_bot.tracking_bidcars import BidCarsTracking
 from telegram_bot.update_db_handler import UpdateDBHandler
 
 
