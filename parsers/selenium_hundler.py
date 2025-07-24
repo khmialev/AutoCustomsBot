@@ -16,7 +16,7 @@ class DriverManager:
 
         o.add_argument("--no-sandbox")
         o.add_argument("--disable-dev-shm-usage")
-        # o.add_argument("--headless")  # Запуск в headless режиме
+        o.add_argument("--headless")  # Запуск в headless режиме
         o.add_argument(
             "--disable-blink-features=AutomationControlled"
         )  # Скрывает, что это автоматизация
