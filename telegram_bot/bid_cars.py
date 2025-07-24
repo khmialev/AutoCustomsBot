@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from models.cars import AuctionCar
-from models.fsm_states import BidCarsCalcStates
+from telegram_bot.states.fsm_states import BidCarsCalcStates
 from parsers.bidcars_parser import BidCars
 
 
