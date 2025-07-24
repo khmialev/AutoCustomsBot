@@ -64,7 +64,7 @@ class BidCarsUrlCalculator:
                 car.use_proxy = True
                 await car.close_session()
                 await message.answer(
-                    "🔴 Нет ответа от Copart. Жду 10 секунд и пробую ещё...",
+                    "🔴 Что то пошло не так. Жду 10 секунд и пробую ещё...",
                     parse_mode="HTML",
                 )
                 await asyncio.sleep(10)
