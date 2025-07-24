@@ -299,4 +299,3 @@ class BasicParser:
             await self.close_session()
             self.logger.warning(e)
             return False
-
