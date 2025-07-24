@@ -52,7 +52,7 @@ class CarBot(BaseBot):
                 f"Привет, <b>{message.from_user.username}</b>! ✌️\n\n"
                 f"Выбери команду из меню ниже или введи её вручную:"
             ),
-            reply_markup=await self._create_main_keyboard(),
+            reply_markup=await self.bot.keyboards.create_main_keyboard(),
             parse_mode="HTML",
         )
 
@@ -60,7 +60,7 @@ class CarBot(BaseBot):
         """Кнопка расчет оп данным"""
         await message.answer(
             text="Хорошо! Теперь выбери действие для расчета платежей за автомобиль:",
-            reply_markup=await self._calculation_for_data(),
+            reply_markup=await self.bot.keyboards.calculation_for_data(),
             parse_mode="HTML",
         )
         # удалить клаву
@@ -113,13 +113,12 @@ class CarBot(BaseBot):
             car_price=estimated_price,
         )
 
-        text = await self.get_text(
+        text = await self.texts.get_text(
             web_car=auction_car,
             car_calculate=car_calculate,
             estimated_price=estimated_price,
         )
 
-        # дичь какая то, но работет
         if auction_car.images:
             try:
                 media = [
@@ -129,7 +128,7 @@ class CarBot(BaseBot):
                 ] + [InputMediaPhoto(media=url) for url in auction_car.images[1:10]]
                 await message.answer_media_group(media)
             except TelegramBadRequest:
-                text = await self.get_text(
+                text = await self.texts.get_text(
                     web_car=auction_car,
                     car_calculate=car_calculate,
                     estimated_price=estimated_price,
