@@ -13,11 +13,11 @@ class BaseBot:
     def __init__(self):
         # Инициализируем Bot и Dispatcher
         self.bot = Bot(token=TOKEN)
-        self.dp = Dispatcher()
+        self.dp = Dispatcher(bot=self.bot)
         self.logger: Logger = MyLogger()
         self.euro_usd: float = float(EURO_USD)
         self.db: DataBaseService = DataBaseService()
         self.car_brands = brands
 
-        self.keyboards = KeyboardFactory(self.car_brands)
-        self.texts = CarTextGenerator(self.euro_usd, self.db)
+        self.keyboards: KeyboardFactory = KeyboardFactory(self.car_brands)
+        self.texts: CarTextGenerator = CarTextGenerator(self.euro_usd, self.db)
