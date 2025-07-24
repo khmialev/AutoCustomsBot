@@ -7,7 +7,7 @@ from aiogram.types import Message
 
 from parsers.copart_parser import CopartParser
 from models.cars import AuctionCar
-from models.fsm_states import CopartCalcStates
+from telegram_bot.states.fsm_states import CopartCalcStates
 
 
 class CopartUrlCalculator:
