@@ -26,10 +26,12 @@ class CarBot(BaseBot):
         self.av_parser: AVParser = AVParser()
 
         self.tracking_bidcars = BidCarsTracking(self)
+        self.bid_cars = BidCarsUrlCalculator(self)
         self.update_db_handler = UpdateDBHandler(self)
+
         self.copart_url_calculator = CopartUrlCalculator(self)
         self.iaai = IaaiUrlCalculator(self)
-        self.bid_cars = BidCarsUrlCalculator(self)
+
         self.manual_basic_calculator = ManualBasicCalculator(self)
         self.manual_spec_calculator = ManualSpecCalculator(self)
 
@@ -52,7 +54,7 @@ class CarBot(BaseBot):
                 f"Привет, <b>{message.from_user.username}</b>! ✌️\n\n"
                 f"Выбери команду из меню ниже или введи её вручную:"
             ),
-            reply_markup=await self.bot.keyboards.create_main_keyboard(),
+            reply_markup=await self.keyboards.create_main_keyboard(),
             parse_mode="HTML",
         )
 
@@ -60,7 +62,7 @@ class CarBot(BaseBot):
         """Кнопка расчет оп данным"""
         await message.answer(
             text="Хорошо! Теперь выбери действие для расчета платежей за автомобиль:",
-            reply_markup=await self.bot.keyboards.calculation_for_data(),
+            reply_markup=await self.keyboards.calculation_for_data(),
             parse_mode="HTML",
         )
         # удалить клаву
