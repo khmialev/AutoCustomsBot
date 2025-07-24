@@ -1,4 +1,3 @@
-import asyncio
 import json
 
 import aiohttp
@@ -309,31 +308,23 @@ class BasicParser:
             .replace("YEAR_FROM", year_from)
             .replace("YEAR_TO", year_to)
         )
-        async with self._session.get(url, ssl=False) as response:
-            html = await response.text()
-            soup = BeautifulSoup(html, "lxml")
-            table = soup.find("div", {"id": "search_area"}).find_all(
-                "div", _class="item-horizontal lots-search "
+
+        driver = await self.slenium_driver.get_driver(url)
+        html = driver.page_source
+        await self.slenium_driver.close_driver()
+        soup = BeautifulSoup(html, "lxml")
+        table = soup.find("div", {"id": "search_area"}).find_all(
+            "div", class_="item-horizontal"
+        )
+        urls = []
+
+        for i in table:
+            url = (
+                i.find("div", class_="wrapper")
+                .find("div", class_="name")
+                .find("a")
+                .get("href")
             )
-            for element in table:
-                wrapper = element.find("div", _class="wrapper").find(
-                    "span", _class="vin_title"
-                )
-                print(wrapper)
+            urls.append(url)
+        return urls
 
-            print(soup)
-
-
-# async def main():
-#     a = BasicParser()
-#     await a.get_session()
-#     b = await a.get_copart_json(
-#         copart_url="https://www.copart.com/public/data/lotdetails/solr/49845435",
-#         proxy=False,
-#         referer="https://www.copart.com/lot/49845435/clean-title-2024-bmw-228i-fl-miami-north",
-#     )
-#     await a.close_session()
-#     print(b)
-#
-#
-# asyncio.run(main())
