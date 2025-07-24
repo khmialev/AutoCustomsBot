@@ -32,7 +32,7 @@ class UpdateDBHandler:
             text=(
                 "Хорошо! Теперь выбери действие для обновления базы данных с ценами:"
             ),
-            reply_markup=await self.bot._create_main_keyboard_for_udate_db(),
+            reply_markup=await self.bot.keyboards.create_main_keyboard_for_udate_db(),
             parse_mode="HTML",
         )
 
@@ -50,7 +50,7 @@ class UpdateDBHandler:
         progress_message = await call.message.answer(
             header_text + f"Прогресс: 0 / {total_brands} брендов",
             parse_mode="HTML",
-            reply_markup=await self.bot._stop_keyboard(),
+            reply_markup=await self.bot.keyboards.stop_keyboard(),
         )
 
         success = 0
@@ -76,7 +76,7 @@ class UpdateDBHandler:
                     + f"⚠️ <b>Обновление бренда {brand.upper()}...</b>\n"
                     f"Осталось: {total_brands - success} брендов.\n",
                     parse_mode="HTML",
-                    reply_markup=await self.bot._stop_keyboard(),
+                    reply_markup=await self.bot.keyboards.stop_keyboard(),
                 )
                 # Запускаем парсер для данного бренда
                 result = await self.bot.av_parser.run_parser(brand=brand)
@@ -99,7 +99,7 @@ class UpdateDBHandler:
                     + log_text
                     + f"Прогресс: {success} / {total_brands} брендов.\n",
                     parse_mode="HTML",
-                    reply_markup=await self.bot._stop_keyboard(),
+                    reply_markup=await self.bot.keyboards.stop_keyboard(),
                 )
             except Exception as e:
                 log_text += f"❌ <b>Ошибка обновления {brand.upper()}!</b>\n"
@@ -108,14 +108,14 @@ class UpdateDBHandler:
                     + log_text
                     + f"Прогресс: {success} / {total_brands} брендов.\n",
                     parse_mode="HTML",
-                    reply_markup=await self.bot._stop_keyboard(),
+                    reply_markup=await self.bot.keyboards.stop_keyboard(),
                 )
                 continue
         else:
             await progress_message.edit_text(
                 header_text + log_text + "🎉 <b>Обновление всех брендов завершено.</b>",
                 parse_mode="HTML",
-                reply_markup=await self.bot._stop_keyboard(),
+                reply_markup=await self.bot.keyboards.stop_keyboard(),
             )
         await call.answer()
 
@@ -125,7 +125,7 @@ class UpdateDBHandler:
         await call.message.answer(
             "✏️ <b>Выберите название бренда:</b> ",
             parse_mode="HTML",
-            reply_markup=await self.bot._create_brands_keyboard(),
+            reply_markup=await self.bot.keyboards.create_brands_keyboard(),
         )
         await call.answer()
 
@@ -141,7 +141,7 @@ class UpdateDBHandler:
         progress_message = await call.message.answer(
             text=header_text,
             parse_mode="HTML",
-            reply_markup=await self.bot._stop_keyboard(),
+            reply_markup=await self.bot.keyboards.stop_keyboard(),
         )
         try:
             await self.bot.av_parser.run_parser(brand)
