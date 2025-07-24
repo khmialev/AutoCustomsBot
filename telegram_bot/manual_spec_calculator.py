@@ -42,7 +42,7 @@ class ManualSpecCalculator:
         await call.message.answer(
             "✏️ <b>Выберите название бренда:</b> ",
             parse_mode="HTML",
-            reply_markup=await self.bot._create_brands_keyboard(spec=True),
+            reply_markup=await self.bot.keyboards.create_brands_keyboard(spec=True),
         )
         await state.set_state(ManualSpecCalcStates.waiting_for_engine)
 
@@ -55,7 +55,9 @@ class ManualSpecCalculator:
         await call.message.edit_text(
             "✏️ <b>Выберите модель бренда:</b> ",
             parse_mode="HTML",
-            reply_markup=await self.bot._create_models_keyboards(car_models=car_models),
+            reply_markup=await self.bot.keyboards.create_models_keyboards(
+                car_models=car_models
+            ),
         )
         await state.set_state(ManualSpecCalcStates.waiting_for_model)
         await call.answer()
