@@ -26,6 +26,7 @@ class TrackingManager:
                 model=model,
                 year_from=year_from,
                 year_to=year_to,
+                on_stop=self.stop_tracking,
             )
         )
         self._tasks[user_id] = task
