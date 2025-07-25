@@ -21,3 +21,9 @@ class BaseBot:
 
         self.keyboards: KeyboardFactory = KeyboardFactory(self.car_brands)
         self.texts: CarTextGenerator = CarTextGenerator(self.euro_usd, self.db)
+
+    async def main(self):
+        """
+        Основной метод, запускающий бесконечный polling.
+        """
+        await self.dp.start_polling(self.bot)

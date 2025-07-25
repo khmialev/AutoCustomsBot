@@ -38,11 +38,7 @@ class CarBot(BaseBot):
         self.dp.message.register(self.cmd_start, Command("start"))
         self.dp.message.register(self.calculate_for_data, F.text == "Расчет по данным")
 
-    async def main(self):
-        """
-        Основной метод, запускающий бесконечный polling.
-        """
-        await self.dp.start_polling(self.bot)
+
 
     async def cmd_start(self, message: Message):
         """
