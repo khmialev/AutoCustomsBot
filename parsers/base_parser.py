@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import aiohttp
@@ -186,11 +187,13 @@ class BasicParser:
             self.logger.warning(f"Error on get copart images json: {e}")
             return False
 
-    async def get_through_selenium(self, copart_url: str):
-        driver = await self.slenium_driver.get_driver(copart_url)
+    async def try_through_playwright(self, copart_url: str):
+        # driver = await self.slenium_driver.get_driver(copart_url)
+        # await self.slenium_driver.close_driver()
+        # json_text = driver.find_element("tag name", "pre").text
+        # return json.loads(json_text)
         try:
-            json_text = driver.find_element("tag name", "pre").text
-            return json.loads(json_text)
+            return await self.playwright.get_data_for_copart(copart_url)
         except Exception as e:
             self.logger.warning(f"Error on get copart car json THROUGH SELENIUM : {e}")
             return False
@@ -209,8 +212,7 @@ class BasicParser:
                 self.logger.info("Success get copart car json")
                 return data
         except Exception as e:
-            data = await self.get_through_selenium(copart_url=copart_url)
-            await self.slenium_driver.close_driver()
+            data = await self.try_through_playwright(copart_url=copart_url)
             if data:
                 return data
             self.logger.warning(f"Error on get copart car json: {e}")
