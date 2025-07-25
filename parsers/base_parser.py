@@ -13,7 +13,7 @@ from config import (
     COPART_LOT_IMAGES_URL,
     BID_CARS_TRACKING_URL,
 )
-from parsers.playright_manager import PlayRightManager
+from parsers.playwright_manager import PlayWrightManager
 from parsers.selenium_hundler import DriverManager
 
 
@@ -23,7 +23,7 @@ class BasicParser:
     ua = UserAgent().random
     copart_lot_images_url = COPART_LOT_IMAGES_URL
     slenium_driver = DriverManager(ua=ua)
-    playright = PlayRightManager()
+    playwright = PlayWrightManager()
 
     av_headers = {
         "accept": "*/*",

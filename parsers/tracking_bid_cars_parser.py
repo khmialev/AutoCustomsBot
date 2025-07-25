@@ -38,7 +38,7 @@ class TrackingBidCarsParser(BasicParser):
     ):
         seen_ids = set()
         while True:
-            # count_cars = await self.playright.get_data(  # получили сколько всего машин
+            # count_cars = await self.playwright.get_data(  # получили сколько всего машин
             #     await self.build_url(
             #         brand=brand,
             #         model=model,
@@ -48,7 +48,7 @@ class TrackingBidCarsParser(BasicParser):
             #     )
             # )
             cars_data = (
-                await self.playright.get_data(  # получили машины на одной страницы
+                await self.playwright.get_data(  # получили машины на одной страницы
                     await self.build_url(
                         brand=brand,
                         model=model,

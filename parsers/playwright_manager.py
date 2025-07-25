@@ -3,7 +3,7 @@ from playwright.async_api import async_playwright
 from fake_useragent import UserAgent
 
 
-class PlayRightManager:
+class PlayWrightManager:
     # todo прокси прокинуть надо бы
     async def get_data(self, url: str) -> str:
         ua = UserAgent().random
