@@ -7,9 +7,10 @@ from sqlalchemy import (
     Numeric,
     DateTime,
     UniqueConstraint,
+    Boolean,
+    ForeignKey,
 )
-from sqlalchemy.orm import declarative_base
-
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -45,3 +46,44 @@ class Brands(Base):
 
     id = Column(Integer, primary_key=True)
     brand = Column(String(100), nullable=False)
+
+
+class Users(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, unique=True, nullable=False)  # Telegram user_id
+    username = Column(String, nullable=True)  # Telegram username
+    is_active = Column(Boolean, default=True)  # Активен ли бот у пользователя
+    is_subscribed = Column(Boolean, default=False)  # Платная подписка
+    subscription_expires = Column(DateTime, nullable=True)  # Когда истекает подписка
+
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    # связь: один пользователь → много отслеживаний
+    trackings = relationship(
+        "TrackingParams", back_populates="user", cascade="all, delete-orphan"
+    )
+
+
+class TrackingParams(Base):
+    __tablename__ = "tracking"
+
+    id = Column(Integer, primary_key=True)
+
+    user_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+
+    brand = Column(String, nullable=False)
+    model = Column(String, nullable=False)
+    year_from = Column(Integer, nullable=True)
+    year_to = Column(Integer, nullable=True)
+
+    is_active = Column(
+        Boolean, default=True
+    )  # можно остановить конкретное отслеживание
+
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    user = relationship("Users", back_populates="trackings")
