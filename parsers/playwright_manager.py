@@ -40,3 +40,9 @@ class PlayWrightManager:
         end = content.rfind("}</body>") + 1
         json_str = content[start:end]
         return json.loads(json_str)
+
+    async def get_bidcars_tips(self, url: str):
+        page = await self._fetch_page(url)
+        raw_body = await page.locator("body").inner_text()
+        await self._cleanup()
+        return json.loads(raw_body)
