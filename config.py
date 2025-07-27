@@ -26,6 +26,7 @@ USD_URL = os.getenv("USD_URL")
 COPART_URL = os.getenv("COPART_URL")
 COPART_LOT_IMAGES_URL = os.getenv("COPART_LOT_IMAGES_URL")
 COPART_MAIN_URL = os.getenv("COPART_MAIN_URL")
+BIDCARS_TIPS = os.getenv("BIDCARS_TIPS")
 
 IAAI_URL = os.getenv("IAAI_URL")
 IMAGE_URL = os.getenv("IMAGE_URL")
