@@ -1,0 +1,98 @@
+[project]
+name = "auto-customs-bot"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Arthur",email = "qdmiracle21@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "alembic (>=1.16.4,<2.0.0)",
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "sqlalchemy (>=2.0.41,<3.0.0)",
+    "loguru (>=0.7.3,<0.8.0)",
+    "aiohttp (>=3.12.14,<4.0.0)",
+    "pydantic-settings (>=2.10.1,<3.0.0)",
+    "aiogram (>=3.21.0,<4.0.0)",
+    "pydantic (>=2.11.7,<3.0.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.12"
+black = "^25.1.0"
+pip-audit = "^2.9.0"
+bandit = "^1.8.3"
+pytest = "^8.4.0"
+pytest-asyncio = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 80
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "F",    # Pyflakes
+    "W",    # Warning
+    "I",    # isort
+#    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "EXE",  # flake8-executable,
+    "ISC",  # flake8-implicit-str-concat
+    "G",    # flake8-logging-format
+    "T20",  # flake8-print
+#    "PT",   # flake8-pytest-style
+#    "RSE",  # flake8-raise
+#    "RET",  # flake8-return
+    "TID",  # flake8-tidy-imports
+#    "ARG",  # flake8-unused-arguments
+    "PGH",  # pygrep-hooks
+    "PLC",  # Pylint Convention
+    "PLE",  # Pylint Errors
+]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+ignore = [
+    "A005",  # Ignore error A005 (incorrect use of built-in functions)
+    "D100",  # Ignore error D100 (missing documentation)
+    "D101",  # Ignore error D101 (missing documentation for method)
+    "D102",  # Ignore error D102 (missing documentation for class)
+    "D103",  # Ignore error D103 (missing documentation for method)
+    "D104",  # Ignore error D104 (missing documentation for method)
+    "D107",  # Ignore error D107 (missing documentation for method)
+    "D105",  # Ignore error D105 (missing documentation for method)
+    "D106",  # Ignore error D106 (missing documentation for method)
+    "D200",  # Ignore error D200 (missing documentation)
+    "D400",  # Ignore error D400 (bad formatting of documentation)
+    "D413",  # Ignore error D413 (incorrect documentation formatting)
+    "E501",  # Ignore error E501 (line too long)
+    "E402",  # Ignore error E402 (imports not at the top of the file)
+    "E731",  # Ignore error E731 (incorrect use of lambda)
+    "F821",  # Ignore error F821 (undefined variable)
+    "N815",  # Ignore error N815 (incorrect variable name)
+    "N805",  # Ignore error N805 (incorrect variable name)
+    "W291",  # Ignore error W291 (whitespace at the end of the line)
+    "EXE002", # Ignore error EXE002 (invalid executable file)
+    "RUF012", # Ignore error RUF012 (configuration error in Ruff)
+    "PGH003", # Ignore error PGH003 (pygrep-hooks error)
+    "A003",  # Ignore error A003 (incorrect use of built-in functions)
+    "ARG002", # Ignore error ARG002 (incorrect argument usage)
+    "RET504", # Ignore error RET504 (error in return values)
+    "RET502", # Ignore error RET502 (error in return values)
+    "RET505", # Ignore error RET505 (error in return values)
+    "G004",  # Ignore error G004 (logging error)
+    "RUF100", # Ignore error RUF100 (undefined error in Ruff)
+]

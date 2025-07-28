@@ -1,0 +1,19 @@
+services:
+  tg-bot:
+    build:
+      dockerfile: docker/backend/Dockerfile
+      context: .
+    container_name: auto_customs_telegram_bot
+    env_file:
+      - ./docker/backend/.env
+    depends_on:
+      - postgresql
+    command: ["entrypoint"]
+
+  postgresql:
+    image: postgres
+    container_name: auto_customs_telegram_db
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./docker/postgresql/.env

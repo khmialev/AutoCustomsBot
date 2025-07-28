@@ -1,0 +1,40 @@
+name: Notify
+
+on:
+  workflow_call:
+    inputs:
+      project_name:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+      source:
+        required: true
+        type: string
+      pipeline_url:
+        required: true
+        type: string
+      pipeline_id:
+        required: true
+        type: string
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install aiohttp
+        run: pip install aiohttp
+
+      - name: Send Telegram message
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CI_PROJECT_NAME: ${{ inputs.project_name }}
+          CI_COMMIT_REF_NAME: ${{ inputs.branch }}
+          CI_PIPELINE_SOURCE: ${{ inputs.source }}
+          CI_PIPELINE_URL: ${{ inputs.pipeline_url }}
+          CI_PIPELINE_ID: ${{ inputs.pipeline_id }}
+        run: python ci_helpers/scripts/notify.py

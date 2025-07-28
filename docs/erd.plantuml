@@ -1,0 +1,84 @@
+@startuml
+' Diagram settings
+hide circle
+skinparam linetype ortho
+skinparam roundcorner 10
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam ArrowColor #505050
+skinparam ClassBackgroundColor #F8F8F8
+skinparam ClassBorderColor #505050
+
+' --- Entities (Tables) ---
+
+entity "cars" as CarModel {
+  id : int <<PK>>
+  -- Data --
+  brand : varchar(100) <<NN>>
+  model : varchar(100) <<NN>>
+  generation : varchar(100) <<NULL>>
+  year_from : int <<NULL>>
+  year_to : int <<NULL>>
+  price_min : numeric(10,2) <<NULL>>
+  price_max : numeric(10,2) <<NULL>>
+  average_price : numeric(10,2) <<NULL>>
+  count_cars : int <<NULL>>
+  created_at : timestamp <<NN>>
+  updated_at : timestamp <<NN>>
+  -- Constraints --
+  __ UniqueConstraint(brand,model,generation,year_from,year_to)
+}
+
+entity "brands" as BrandModel {
+  id : int <<PK>>
+  -- Data --
+  brand : varchar(100) <<NN,UQ>>
+  created_at : timestamp <<NN>>
+  updated_at : timestamp <<NN>>
+}
+
+entity "users" as UserModel {
+  id : int <<PK>>
+  -- Data --
+  user_id : int <<NN,UQ>> ' Telegram ID
+  username : varchar <<NULL>>
+  is_active : boolean <<DEFAULT=true>>
+  is_subscribed : boolean <<DEFAULT=false>>
+  subscription_expires : timestamp <<NULL>>
+  created_at : timestamp <<NN>>
+  updated_at : timestamp <<NN>>
+}
+
+entity "tracking" as TrackingParamModel {
+  id : int <<PK>>
+  -- FKs --
+  user_id : int <<FK>> ' → users.id
+  -- Data --
+  brand : varchar <<NN>>
+  model : varchar <<NN>>
+  year_from : int <<NULL>>
+  year_to : int <<NULL>>
+  is_active : boolean <<DEFAULT=true>>
+  created_at : timestamp <<NN>>
+  updated_at : timestamp <<NN>>
+}
+
+entity "bid_cars_tips" as BidCarTipModel {
+  id : int <<PK,AI>>
+  -- Data --
+  data : json <<NN>>
+  created_at : timestamp <<NN>>
+  updated_at : timestamp <<NN>>
+}
+
+' --- Relationships ---
+
+UserModel ||--o{ TrackingParamModel : "1 user → N trackings"
+
+' --- Standalone Tables ---
+' BrandModel (no direct relationships)
+' CarModel (no direct relationships)
+' BidCarTipModel (no direct relationships)
+
+@enduml

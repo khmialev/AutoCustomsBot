@@ -15,3 +15,5 @@ This Telegram bot helps you calculate customs duty and additional expenses for i
   Built with Python's async features and [aiogram](https://docs.aiogram.dev/) for fast performance.
 - **Docker Deployment:**  
   Easily run the bot and PostgreSQL in containers using Docker Compose.
+
+© 2025 All rights reserved. Use without permission is prohibited.
