@@ -1,8 +1,10 @@
+import asyncio
+
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from database.database_connection import DataBaseConnection
-from database.db_models import Car
+from database.db_models import Car, BidCarsTips
 
 
 class DataBaseService(DataBaseConnection):
@@ -82,3 +84,23 @@ class DataBaseService(DataBaseConnection):
             # Получаем список уникальных названий моделей
             models = [row[0] for row in result.all()]
             return models
+
+    async def save_json(self, cars_json):
+        async for session in self.get_session:
+            result = await session.execute(select(BidCarsTips).limit(1))
+            record = result.scalar_one_or_none()
+
+            if record:
+                record.data = cars_json  # обновляем JSON
+            else:
+                session.add(BidCarsTips(data=cars_json))  # если нет — добавляем
+
+            await session.commit()
+
+    async def get_json(self):
+        async for session in self.get_session:
+            result = await session.execute(
+                select(BidCarsTips).order_by(BidCarsTips.id.desc()).limit(1)
+            )
+            record = result.scalar_one_or_none()
+            return record.data if record else None
