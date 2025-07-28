@@ -85,6 +85,13 @@ class TrackingBidCarsParser(BasicParser):
                 current_bid = data["prebid_price"]
                 buy_now = data["buy_now_price"]
                 damage = data["primary_damage"]
+                estimated_min = data["estimated_min"]
+                estimated_max = data["estimated_max"]
+                location = data["location"]
+                odometer = str(round(int(data["odometer"]) * 1.60, 2))
+                seller = data["seller_long"]
+                status = data["start_code"]
+                time_left_formatted = data["time_left_formatted"]
 
                 text = await self.get_car_text(
                     brand=brand,
@@ -95,6 +102,13 @@ class TrackingBidCarsParser(BasicParser):
                     buy_now=buy_now,
                     damage=damage,
                     url=url,
+                    estimated_min=estimated_min,
+                    estimated_max=estimated_max,
+                    location=location,
+                    odometer=odometer,
+                    seller=seller,
+                    status=status,
+                    time_left_formatted=time_left_formatted,
                 )
                 await bot.send_message(text=text, parse_mode="HTML", chat_id=chat_id)
                 # await bot.send_photo(
@@ -112,13 +126,28 @@ class TrackingBidCarsParser(BasicParser):
         buy_now,
         damage,
         url,
+        estimated_min,
+        estimated_max,
+        location,
+        odometer,
+        seller,
+        status,
+        time_left_formatted,
     ) -> str:
         text = (
-            f"<b>{brand} {model} {year}</b>\n"
-            f"🚗 <b>Объем:</b> {engine or '—'} л\n"
-            f"💰 <b>Ставка сейчас:</b> ${current_bid or '—'}\n"
-            f"💵 <b>Купить сейчас:</b> ${ buy_now or '—'}\n"
-            f"💥 <b>Повреждения:</b> { damage or '—'}"
+            f"🚘 <b>{brand} {model} {year}</b>\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🔹 <b>Объем:</b> {engine or '—'} л\n"
+            f"💰 <b>Ставка сейчас:</b> {current_bid or '—'}\n"
+            f"💵 <b>Купить сейчас:</b> {buy_now or '—'}\n"
+            f"📈 <b>Оценочная стоимость:</b> $ {estimated_min or '—'} - ${estimated_max or '—'}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"💥 <b>Повреждения:</b> {damage or '—'}\n"
+            f"📍 <b>Локация:</b> {location or '—'}\n"
+            f"📊 <b>Пробег:</b> {odometer or '—'}\n"
+            f"🏷 <b>Продавец:</b> {seller or '—'}\n"
+            f"📌 <b>Статус:</b> {status or '—'}\n"
+            f"⏳ <b>Время до начала торгов:</b> {time_left_formatted or '—'}"
         )
         if url:
             text += f'🔗 <a href="{ url}">Открыть лот</a>'
