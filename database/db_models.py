@@ -9,6 +9,7 @@ from sqlalchemy import (
     UniqueConstraint,
     Boolean,
     ForeignKey,
+    JSON,
 )
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -87,3 +88,10 @@ class TrackingParams(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     user = relationship("Users", back_populates="trackings")
+
+
+class BidCarsTips(Base):
+    __tablename__ = "bid_cars_tips"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    data = Column(JSON, nullable=False)
