@@ -18,7 +18,7 @@ class BidCarsTracking:
         self.bot.dp.callback_query.register(
             self.process_brand_input,
             TrackingBidCars.waiting_for_model,
-            F.data.in_(self.bot.car_brands),
+            F.data.startswith("brand:"),
         )
 
         self.bot.dp.callback_query.register(
@@ -38,17 +38,17 @@ class BidCarsTracking:
         msg = await message.answer(
             "🟢 <b>СТАРТ ОТСЛЕЖИВАНИЯ</b>\n" "━━━━━━━━━━━━━━━━━━━━\n" "Выберите бренд:",
             parse_mode="HTML",
-            reply_markup=await self.bot.keyboards.create_brands_keyboard(),
+            reply_markup=await self.bot.keyboards.create_brands_keyboard_bidcars(),
         )
 
         await state.update_data(tracking_message_id=msg.message_id)
         await state.set_state(TrackingBidCars.waiting_for_model)
 
     async def process_brand_input(self, call: CallbackQuery, state: FSMContext):
-        brand = call.data.lower()
+        brand = call.data.split(":")[-1]
         await state.update_data(brand=brand)
 
-        car_models = await self.bot.db.get_models(brand=brand)
+        # car_models = await self.bot.db.get_models(brand=brand)
         data = await state.get_data()
         msg_id = data["tracking_message_id"]
 
@@ -63,7 +63,9 @@ class BidCarsTracking:
             message_id=msg_id,
             text=text,
             parse_mode="HTML",
-            reply_markup=await self.bot.keyboards.create_models_keyboards(car_models),
+            reply_markup=await self.bot.keyboards.create_models_keyboards_bidcars(
+                brand=brand
+            ),
         )
         await call.answer()
         await state.set_state(TrackingBidCars.waiting_for_year)
@@ -76,7 +78,7 @@ class BidCarsTracking:
         brand = data["brand"]
         msg_id = data["tracking_message_id"]
 
-        generations = await self.bot.db.get_years(brand=brand, model=model)
+        # generations = await self.bot.db.get_years(brand=brand, model=model)
 
         text = (
             f"🟢 <b>СТАРТ ОТСЛЕЖИВАНИЯ</b>\n"
@@ -90,7 +92,9 @@ class BidCarsTracking:
             message_id=msg_id,
             text=text,
             parse_mode="HTML",
-            reply_markup=await self.bot.keyboards.create_years_keyboard(generations),
+            reply_markup=await self.bot.keyboards.create_years_keyboard_bidcars(
+                model=model
+            ),
         )
         await call.answer()
         await state.set_state(TrackingBidCars.waiting_for_generation)
@@ -101,7 +105,12 @@ class BidCarsTracking:
         model = data["model"]
         msg_id = data["tracking_message_id"]
 
-        year_from, year_to = call.data.split("_")
+        if "all" in call.data:
+            data = call.data.split(":")
+            year_from = data[-2]
+            year_to = data[-1]
+        else:
+            year_from, year_to = call.data.split(":")
 
         text = (
             f"🎯 <b>Отслеживание запущено!</b>\n"
