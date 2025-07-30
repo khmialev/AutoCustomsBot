@@ -13,6 +13,12 @@ from src.bot.handlers.tracking_handlers.tracking_add_car_handler import (
 from src.bot.handlers.tracking_handlers.tracking_delete_car_handler import (
     router as tracking_delete_car_router,
 )
+from src.bot.handlers.calculate_handler import (
+    router as calculate_menu_router,
+)
+from src.bot.handlers.calculate_handlers.set_params_handler import (
+    router as calculate_set_fees_router,
+)
 
 
 all_routers = (
@@ -23,4 +29,6 @@ all_routers = (
     tracking_list_router,
     tracking_add_router,
     tracking_delete_car_router,
+    calculate_menu_router,
+    calculate_set_fees_router,
 )
