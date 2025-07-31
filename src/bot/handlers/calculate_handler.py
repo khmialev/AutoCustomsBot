@@ -1,6 +1,11 @@
 from aiogram import Router, F
 from aiogram.types import Message
 
+from src.bot.handlers.constants.emojs import MONEY_BAG, LOCATION
+from src.bot.handlers.constants.texts import (
+    SHOW_CALCULATE_MENU,
+    HANDLE_START_COMMAND,
+)
 from telegram_bot.keyboards.calculate_menu import calculation_menu_keyboard
 from telegram_bot.keyboards.main_menu import main_menu_keyboard
 
@@ -10,7 +15,7 @@ router = Router(name="calculate-menu-router")
 @router.message(F.text == "💰 Расчет авто")
 async def show_calculate_menu(message: Message):
     await message.answer(
-        "💰 Меню расчета авто:",
+        text=f"{MONEY_BAG} {SHOW_CALCULATE_MENU}",
         reply_markup=await calculation_menu_keyboard(),
     )
 
@@ -18,6 +23,6 @@ async def show_calculate_menu(message: Message):
 @router.message(F.text == "⬅️ Назад в меню")
 async def back_to_main(message: Message):
     await message.answer(
-        "📍 Главное меню\nВыберите действие:",
+        text=f"{LOCATION} {HANDLE_START_COMMAND}",
         reply_markup=await main_menu_keyboard(),
     )

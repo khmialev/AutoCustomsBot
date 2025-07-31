@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 
-from telegram_bot.texts.help_text import tariffs_html
+from src.bot.handlers.constants.static_texts import TARIFFS_HTML
 
 router = Router(name="help-router")
 
@@ -11,6 +11,6 @@ async def handle_help_command(
     message: Message,
 ):
     await message.answer(
-        text=tariffs_html,
+        text=TARIFFS_HTML,
         parse_mode="HTML",
     )
