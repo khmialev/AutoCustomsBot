@@ -7,8 +7,6 @@ from telegram_bot.keyboards.calculate_menu import calculation_menu_keyboard
 
 router = Router(name="calculate-set-fees-router")
 
-# удаляю предыдущие сообщения, а может не надо?
-
 
 @router.message(F.text == "🛠 Задать свои значения для расчета")
 async def start_set_custom_fees(message: Message, state: FSMContext):
