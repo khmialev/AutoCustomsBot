@@ -9,7 +9,7 @@ async def send_and_delete(
     parse_mode=None,
     reply_markup=None,
 ):
-    """Функция для удаления предыдущих сообщений из чата"""
+    """Function to delete previous messages from the chat"""
     data = await state.get_data()
     if old_msg_id := data.get("last_bot_msg"):
         try:
