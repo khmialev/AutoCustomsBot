@@ -19,6 +19,9 @@ from src.bot.handlers.calculate_handler import (
 from src.bot.handlers.calculate_handlers.set_params_handler import (
     router as calculate_set_fees_router,
 )
+from src.bot.handlers.calculate_handlers.calculate_car_handler import (
+    router as calculate_car_router,
+)
 
 
 all_routers = (
@@ -31,4 +34,5 @@ all_routers = (
     tracking_delete_car_router,
     calculate_menu_router,
     calculate_set_fees_router,
+    calculate_car_router,
 )
