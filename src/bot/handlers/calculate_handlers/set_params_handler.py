@@ -2,11 +2,11 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from src.bot.handlers.constants.emojs import INFO
-from src.bot.handlers.constants.static_texts import (
+from src.bot.constants.emojis import INFO
+from src.bot.constants.static_texts import (
     FINISH_CUSTOM_FEES_HTML,
 )
-from src.bot.handlers.constants.texts import (
+from src.bot.constants.texts import (
     START_SET_CUSTOM_FEES,
     DELIVERY_VIA_GEORGIA,
     DELIVERY_VIA_LITHUANIA,
