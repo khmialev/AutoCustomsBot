@@ -1,8 +1,8 @@
 from aiogram import Router, F
 from aiogram.types import Message
 
-from src.bot.handlers.constants.emojs import MONEY_BAG, LOCATION
-from src.bot.handlers.constants.texts import (
+from src.bot.constants.emojis import MONEY_BAG, LOCATION
+from src.bot.constants.texts import (
     SHOW_CALCULATE_MENU,
     HANDLE_START_COMMAND,
 )
