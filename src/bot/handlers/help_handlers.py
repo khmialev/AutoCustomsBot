@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 
-from src.bot.handlers.constants.static_texts import TARIFFS_HTML
+from src.bot.constants.static_texts import TARIFFS_HTML
 
 router = Router(name="help-router")
 
