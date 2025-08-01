@@ -32,3 +32,15 @@ TARIFFS_HTML = """🚗 <b>CarHunter</b>\n
 ━━━━━━━━━━━━━━━\n
 📞 <b>Хотите подключить тариф или задать вопрос?</b>\n
 👉 Свяжитесь с менеджером: <b>@YourManagerUsername</b>"""
+
+
+FINISH_CUSTOM_FEES_HTML = """✅ <b>Ваши значения сохранены:</b>
+🚢 <b>Доставка через Грузию:</b> {delivery_georgia} $
+🚢 <b>Доставка через Литву:</b> {delivery_lithuania} $
+💳 <b>Комиссия аукциона:</b> {auction_fee} $
+📄 <b>Услуги декларанта:</b> {declarant_fee} $
+👤 <b>Льготник:</b> {beneficiary_fee} $
+🏛 <b>Таможенный сбор:</b> {customs_duty} $
+♻️ <b>Утилизационный сбор:</b> {recycling_fee} $
+🎮 <b>Игра на аукционе:</b> {auction_play_fee} $
+"""
