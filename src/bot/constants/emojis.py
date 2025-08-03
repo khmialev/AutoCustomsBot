@@ -30,6 +30,7 @@ CARD = "\U0001f4b3"  # 💳
 DOLLAR = "\U0001f4b5"  # 💵
 EURO = "\U0001f4b6"  # 💶
 CREDIT = "\u0024"  # $
+TICKET = "\U0001f39f"  # 🎟
 
 # 🚗 Авто и транспорт
 CAR = "\U0001f697"  # 🚗
@@ -69,6 +70,7 @@ PIN = "\U0001f4cc"  # 📌
 LOCATION = "\U0001f4cd"  # 📍
 GLOBE = "\U0001f30d"  # 🌍
 PACKAGE = "\U0001f4e6"  # 📦
+RAZOR = "\U0001fa92"  # 🪒
 
 # 👤 Пользователи
 USER = "\U0001f464"  # 👤
