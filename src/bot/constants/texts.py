@@ -16,3 +16,55 @@ AUCTION_PLAY_FEE = "Введите услуги игры на аукционе (
 START_CALCULATE = "<b>Вставьте ссылку</b> на автомобиль (например):\n<code>https://bid.cars/ru/lot/0-41546549/2021-BMW-228i-Gran-Coupe-WBA73AK05M7H21100</code>\n\n━━━━━━━━━━━━━━━━━━━━\nЯ буду ждать вашу ссылку!"
 INCORRECT_URL = "<b>Некорректный URL.</b> Попробуйте снова.\n(Ссылка должна начинаться с <code>http</code>)"
 CORRECT_URL = "<b>Ссылка получена:</b> <code>{url}</code>\nНачинаю обработку..."
+
+
+INPUT_CAR_PRICE = "<b>Без стоимости авто нельзя рассчитать таможенную пошлину</b>.\nДля машин младше 3 лет пошлина идёт как % от цены.\n\nПожалуйста, введите предполагаемую стоимость авто (в $):"
+INPUT_NUMBER = "Пожалуйста, введите число (например, 15000)."
+INCORRECT_CAR_DATA = "Данные о машине не найдены, начните заново."
+
+
+CAR_SOURCE = "<b>Источник:</b> {url}"
+CAR_INFO = """<b>Автомобиль</b>
+• Бренд: <b>{brand}</b>
+• Модель: <b>{model}</b>
+• Год: <b>{year}</b>
+• Двигатель: <b>{engine}</b> см³"""
+
+CAR_AUCTION_INFO = """<b>Данные по аукциону</b>
+{buy_now}{current_bid}{sales_status}"""
+
+BUY_NOW = "• Купить сейчас: <b>{buy_now}</b> $"
+CURRENT_BID = "• Текущая ставка ({timestamp}): <b>{current_bid}</b> $"
+SALES_STATUS = "• Статус продажи: <b>{sales_status}</b>"
+
+CAR_DAMAGE_MAIN = "• Основное повреждение: <b>{main_damage}</b>"
+CAR_DAMAGE_SECONDARY = "• Вторичные повреждение: <b>{secondary_damage}</b>"
+
+EXPENSES_HEADER = "<b>Расходы</b>"
+EXPENSES_ITEM = "• {name}: <b>{value} $</b>"
+EXPECTED_PRICE = "• <b>Ожидаемая стоимость: {estimated_price} $</b>"
+
+FEES_UP_TO_THREE_YEARS = "<b>Пошлина ДО 3 лет</b>:"
+FEES_THREE_TO_FIVE_YEARS = "<b>Пошлина (3–5 лет)</b>:"
+
+CUSTOMS_TAX_HEADER = "<b>{header}</b>"
+CUSTOMS_TAX_ITEM = " {discounted:.2f} $ ({full:.2f} $)"
+CUSTOMS_TOTAL = "──────────\nИтог: <b>{discounted_total:.2f} $</b> (без льготы: {total:.2f} $)"
+
+WARNING_3_YEARS = "<b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>"
+WARNING_5_YEARS = "<b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «СТАРШЕ 5 лет».</b>"
+
+NOT_FOUND = (
+    "<b>Бренд: {brand}, модель: {model}, год выпуска: {year}.</b> Нет в базе\n"
+)
+MULTIPLE_FOUND_HEADER = (
+    "<b>Найдено несколько вариантов в базе по этим данным:</b>"
+)
+MULTIPLE_FOUND_ITEM = """• <b>{brand} {model}</b> ({year_from}–{year_to})
+• Первая цена: <b>{price_min}$</b>
+• Средняя цена: <b>{average_price}$</b>
+Количество машин: <b>{count_cars}</b>"""
+
+SINGLE_FOUND = """• Первая цена в РБ: <b>{price_min} $</b>
+• Средняя цена в РБ: <b>{average_price} $</b>
+• Количество машин: <b>{count_cars}</b>"""
