@@ -5,7 +5,8 @@ class AuctionCar(BaseModel):
     brand: str
     model: str
     year: int
-    engine: float | None = None
+    engine_capacity: float | None = None
+    engine_type: str = None
     url: str | None = None
     buy_now: int | None = None
     current_bid: int | None = None
@@ -15,11 +16,28 @@ class AuctionCar(BaseModel):
     image: str | None = None
     images: list[str] = None
 
+    def engine_type_for_statistic(self):
+        if self.engine_type == "GAS":
+            self.engine_type = "1"
+        elif self.engine_type == "DIESEL":
+            self.engine_type = "5"
+
+
+class AvAnalyticsCar(BaseModel):
+    brand: str
+    model: str
+    generation: str
+    year: int
+    average_price: float
+    average_sell_days: int
+
 
 class AvStatisticCar(BaseModel):
     brand: str
     model: str
     generation: str
-    year: int
-    average_price: int
-    average_sell_days: int
+    year: str
+    price_min: float
+    price_max: float
+    average_price: float
+    count_cars: int
