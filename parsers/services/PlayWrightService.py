@@ -2,19 +2,23 @@ import json
 from playwright.async_api import async_playwright, Page
 from fake_useragent import UserAgent
 
+from docker.backend.config import PROXY_CONFIG
+
 
 class PlayWrightManager:
     def __init__(self):
         self.ua = UserAgent()
+        self._proxy = PROXY_CONFIG
 
     async def _fetch_page(self, url: str) -> Page:
         self._ua = self.ua.random
         self._playwright = await async_playwright().start()
-        self._browser = await self._playwright.chromium.launch(headless=True)
+        self._browser = await self._playwright.chromium.launch(
+            headless=True, proxy=self._proxy
+        )
         self._context = await self._browser.new_context(
             user_agent=self._ua,
             locale="en-US",
-            # proxy={"server": "http://myproxy:3128"}
         )
         page = await self._context.new_page()
         await page.goto(url, timeout=5000)
