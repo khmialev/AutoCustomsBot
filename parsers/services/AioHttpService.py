@@ -37,12 +37,12 @@ class AiohttpService:
                 **kwargs,
                 proxy=PROXY_URL if proxy else None,
                 cookies=COOKIES_FOR_JSON if cookies else None,
-            ) as r:
-                logger.info(f"Aiohttp GET {url} -> {r.status}")
-                return await self._safe_read(r)
+            ) as response:
+                logger.info(f"Aiohttp GET {url} -> {response.status}")
+                return await response.json()
         except Exception as e:
             logger.warning(f"GET {url} failed: {e}")
-            return None
+            return {}
 
     async def get_cookies(self, url: str, **kwargs) -> dict | str | None:
         """Выполняет GET-запрос и возвращает куки"""
@@ -51,7 +51,6 @@ class AiohttpService:
             async with session.get(url, ssl=False, **kwargs) as r:
                 logger.info(f"Aiohttp GET {url} -> {r.status}")
                 return r.cookies
-
         except Exception as e:
             logger.warning(f"GET {url} failed: {e}")
             return None
@@ -64,22 +63,12 @@ class AiohttpService:
         try:
             async with session.post(
                 url, ssl=False, **kwargs, cookies=cookies, json=json_data
-            ) as r:
-                logger.info(f"Aiohttp POST {url} -> {r.status}")
-                return await self._safe_read(r)
+            ) as response:
+                logger.info(f"Aiohttp POST {url} -> {response.status}")
+                return await response.json()
         except Exception as e:
             logger.warning(f"POST {url} failed: {e}")
-            return None
-
-    @staticmethod
-    async def _safe_read(response: aiohttp.ClientResponse) -> dict | str | None:
-        """Пробует вернуть JSON, если не получилось — текст"""
-        try:
-            return await response.json()
-        except aiohttp.ContentTypeError:
-            return await response.text()
-        except Exception:
-            return None
+            return {}
 
 
 aiohttp_service = AiohttpService()
