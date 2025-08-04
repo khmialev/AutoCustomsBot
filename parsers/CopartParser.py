@@ -1,14 +1,12 @@
 from fake_useragent import UserAgent
 
 from parsers.heders.copart_headers import (
-    COPART_CAR_HEADER,
     COPART_IMAGE_HEADERS,
-    COPART_MAIN_PAGE_HEADERS,
 )
 from parsers.models.CarModel import AuctionCar
 from parsers.services.AioHttpService import aiohttp_service
 from parsers.services.PlayWrightService import playwright
-from parsers.urls.copart import (
+from parsers.urls.urls import (
     COPART_MAIN_URL,
     COPART_LOT_IMAGES_URL,
     COPART_LOT_URL,
@@ -49,7 +47,7 @@ class CopartParser:
                 .get("imagesList", {})
                 .get("IMAGE", [])
             ] or None
-
+        engine_type = lot_details.get("ft")
         brand = lot_details.get("mkn")
         model = lot_details.get("lmg", "")
         year = lot_details.get("lcy")
@@ -80,8 +78,9 @@ class CopartParser:
             brand=brand,
             model=model,
             year=year,
-            engine=engine,
-            url=url,  # можно добавить copart_url
+            engine_capacity=engine,
+            engine_type=engine_type,
+            url=referer,
             image=image,
             buy_now=buy_now,
             current_bid=current_bid,
@@ -97,6 +96,7 @@ class CopartParser:
 
         model_lower = model.lower()
 
+        # будет расти тк я еще не все марки/модели прошел ;(
         replacements = {
             "class": lambda m: m.replace("class", "klass").replace(" ", ""),
             "series": lambda m: m.replace("series", "seriya").replace(" ", "-"),
