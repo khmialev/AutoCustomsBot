@@ -46,6 +46,7 @@ EXPECTED_PRICE = "• <b>Ожидаемая стоимость: {estimated_price
 
 FEES_UP_TO_THREE_YEARS = "<b>Пошлина ДО 3 лет</b>:"
 FEES_THREE_TO_FIVE_YEARS = "<b>Пошлина (3–5 лет)</b>:"
+FEES_OLDER_FIVE_YEARS = "<b>Пошлина СТАРШЕ 5 лет</b>"
 
 CUSTOMS_TAX_HEADER = "<b>{header}</b>"
 CUSTOMS_TAX_ITEM = " {discounted:.2f} $ ({full:.2f} $)"
@@ -60,11 +61,8 @@ NOT_FOUND = (
 MULTIPLE_FOUND_HEADER = (
     "<b>Найдено несколько вариантов в базе по этим данным:</b>"
 )
-MULTIPLE_FOUND_ITEM = """• <b>{brand} {model}</b> ({year_from}–{year_to})
-• Первая цена: <b>{price_min}$</b>
+MULTIPLE_FOUND_ITEM = """• <b>{brand} {model} {generation} {year}</b> 
 • Средняя цена: <b>{average_price}$</b>
-Количество машин: <b>{count_cars}</b>"""
+• Среднее количество дней в продаже: <b>{average_sell_days}</b>"""
 
-SINGLE_FOUND = """• Первая цена в РБ: <b>{price_min} $</b>
-• Средняя цена в РБ: <b>{average_price} $</b>
-• Количество машин: <b>{count_cars}</b>"""
+NOT_CAR_DATA = "<b>Сервер так и не ответил.</b>\nПопробуйте позже."
