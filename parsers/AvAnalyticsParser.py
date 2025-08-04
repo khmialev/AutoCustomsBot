@@ -33,7 +33,7 @@ class AvAnalytics:
         generation_ids = await self.get_generation(
             brand_id=str(brand_id), model_id=str(model_id), year=year
         )
-
+        await aiohttp_service.close_session()
         return await self.get_statistic(
             year,
             brand_id,
