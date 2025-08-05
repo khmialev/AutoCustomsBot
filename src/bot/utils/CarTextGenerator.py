@@ -1,6 +1,4 @@
 import datetime
-
-from docker.backend.config import EURO_USD
 from models.CalculatorCarModel import CalculateCar
 from parsers.models.CarModel import AuctionCar, AvAnalyticsCar, AvStatisticCar
 from src.bot.constants.emojis import CAR, RAZOR, TRUCK, DOLLAR, WARNING, CROSS
@@ -27,11 +25,14 @@ from src.bot.constants.texts import (
     FEES_UP_TO_THREE_YEARS,
     FEES_THREE_TO_FIVE_YEARS,
 )
+from src.bot.settings import get_settings
+
+settings = get_settings()
 
 
 class CarTextGenerator:
-    def __init__(self, euro_usd: float):
-        self.euro_usd = float(euro_usd)
+    def __init__(self):
+        self.euro_usd = settings.EURO_USD
 
     async def get_text(
         self,
@@ -188,4 +189,4 @@ class CarTextGenerator:
         return "\n".join(lines)
 
 
-text_generator = CarTextGenerator(euro_usd=EURO_USD)
+text_generator = CarTextGenerator()

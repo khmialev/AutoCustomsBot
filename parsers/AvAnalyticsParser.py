@@ -3,13 +3,9 @@ from urllib.parse import urlencode
 from fake_useragent import UserAgent
 from parsers.models.CarModel import AvAnalyticsCar
 from parsers.services.AioHttpService import aiohttp_service
-from parsers.urls.urls import (
-    AV_STATISTIC_MODEL_URl,
-    AV_STATISTIC_GENERATION_URl,
-    AV_STATISTIC_BRAND_URl,
-    AV_STATISTIC_BASE_URl,
-    AV_STATISTIC_PATH,
-)
+from src.bot.settings import get_settings
+
+settings = get_settings()
 
 
 class AvAnalytics:
@@ -19,6 +15,11 @@ class AvAnalytics:
                 "user-agent": UserAgent().random,
             }
         }
+        self._av_statistic_brand_url = settings.AV_STATISTIC_BRAND_URl
+        self._av_statistic_model_url = settings.AV_STATISTIC_MODEL_URl
+        self._av_statistic_generation_url = settings.AV_STATISTIC_GENERATION_URl
+        self._av_statistic_base_url = settings.AV_STATISTIC_BASE_URl
+        self._av_statistic_path = settings.AV_STATISTIC_PATH
 
     async def run(
         self,
@@ -45,25 +46,27 @@ class AvAnalytics:
 
     async def get_brand(self, brand):
         data = await aiohttp_service.get_json_data(
-            url=AV_STATISTIC_BRAND_URl, proxy=False, cookies=False, **self.parms
+            url=self._av_statistic_brand_url,
+            cookies=False,
+            **self.parms,
         )
         brands_map = {item["slug"]: item["id"] for item in data}
         return brands_map.get(brand.lower(), None)
 
     async def get_model(self, brand_id: str, model: str):
-        url = AV_STATISTIC_MODEL_URl.format(brand_id=brand_id)
+        url = self._av_statistic_model_url.format(brand_id=brand_id)
         data = await aiohttp_service.get_json_data(
-            url=url, proxy=False, cookies=False, **self.parms
+            url=url, cookies=False, **self.parms
         )
         brands_map = {item["slug"]: item["id"] for item in data}
         return brands_map.get(model.lower(), None)
 
     async def get_generation(self, brand_id: str, model_id: str, year: str):
-        url = AV_STATISTIC_GENERATION_URl.format(
+        url = self._av_statistic_generation_url.format(
             brand_id=brand_id, model_id=model_id
         )
         data = await aiohttp_service.get_json_data(
-            url=url, proxy=False, cookies=False, **self.parms
+            url=url, cookies=False, **self.parms
         )
         year = int(year)
         generations = []
@@ -76,7 +79,7 @@ class AvAnalytics:
         return generations
 
     async def build_url(self, path: str, query: dict = None, **kwargs) -> str:
-        url = AV_STATISTIC_BASE_URl + path.format(**kwargs)
+        url = self._av_statistic_base_url + path.format(**kwargs)
         if query:
             url += "?" + urlencode(query)
         return url
@@ -93,7 +96,7 @@ class AvAnalytics:
         urls = await asyncio.gather(
             *[
                 self.build_url(
-                    AV_STATISTIC_PATH,
+                    self._av_statistic_path,
                     query={
                         "brand": brand_id,
                         "model": model_id,
@@ -111,7 +114,7 @@ class AvAnalytics:
         responses = await asyncio.gather(
             *[
                 aiohttp_service.get_json_data(
-                    url=url, proxy=False, cookies=False, **self.parms
+                    url=url, cookies=False, **self.parms
                 )
                 for url in urls
             ]

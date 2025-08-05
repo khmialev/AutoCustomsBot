@@ -1,16 +1,17 @@
 import aiohttp
-
-from docker.backend.config import PROXY_URL
+from src.bot.settings import get_settings
 from parsers.heders.CopartHeaders import COOKIES_FOR_JSON
 from src.utils.logger import get_logger
 
 logger = get_logger()
+settings = get_settings()
 
 
 class AiohttpService:
 
     def __init__(self):
         self._session: aiohttp.ClientSession | None = None
+        self._proxy = settings.get_proxy_url()
 
     async def get_session(self) -> aiohttp.ClientSession:
         if self._session is None or self._session.closed:
@@ -24,7 +25,6 @@ class AiohttpService:
     async def get_json_data(
         self,
         url: str,
-        proxy=True,
         cookies=True,
         **kwargs,
     ) -> dict | str | None:
@@ -35,7 +35,7 @@ class AiohttpService:
                 url,
                 ssl=False,
                 **kwargs,
-                proxy=PROXY_URL if proxy else None,
+                proxy=self._proxy if self._proxy else None,
                 cookies=COOKIES_FOR_JSON if cookies else None,
             ) as response:
                 logger.info(f"Aiohttp GET {url} -> {response.status}")

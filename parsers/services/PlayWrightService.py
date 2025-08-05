@@ -1,14 +1,16 @@
 import json
 from playwright.async_api import async_playwright, Page
 from fake_useragent import UserAgent
+from src.bot.settings import get_settings
 
-from docker.backend.config import PROXY_CONFIG
+
+settings = get_settings()
 
 
 class PlayWrightManager:
     def __init__(self):
         self.ua = UserAgent()
-        self._proxy = PROXY_CONFIG
+        self._proxy = settings.get_proxy_config()
 
     async def _fetch_page(self, url: str) -> Page:
         self._ua = self.ua.random
@@ -21,7 +23,7 @@ class PlayWrightManager:
             locale="en-US",
         )
         page = await self._context.new_page()
-        await page.goto(url, timeout=5000)
+        await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_load_state("networkidle")
         return page
 
@@ -50,6 +52,12 @@ class PlayWrightManager:
         raw_body = await page.locator("body").inner_text()
         await self._cleanup()
         return json.loads(raw_body)
+
+    async def get_iaai_car_page(self, url):
+        page = await self._fetch_page(url)
+        html = await page.content()
+        await self._cleanup()
+        return html
 
 
 playwright = PlayWrightManager()

@@ -1,10 +1,12 @@
-from docker.backend.config import AUCTION_BUTTON, AUCTION_TAX, DELIVERY
+from src.bot.settings import get_settings
+
+settings = get_settings()
 
 
 class BasicCalculate:
-    auction_button = int(AUCTION_BUTTON)
-    auction_tax = int(AUCTION_TAX)
-    delivery = int(DELIVERY)
+    auction_button = settings.AUCTION_BUTTON
+    auction_tax = settings.AUCTION_TAX
+    delivery = settings.DELIVERY
 
     async def expenses_to_the_tsw(self):
         """Расходы до свх"""

@@ -1,15 +1,13 @@
-import asyncio
 from datetime import datetime
 from fake_useragent import UserAgent
-
-from docker.backend.config import USD_URL, AV_PAGE_URL
 from parsers.heders.AvHeaders import AV_HEADERS
 from parsers.models.CarModel import AvStatisticCar
 from parsers.services.AioHttpService import aiohttp_service
-from parsers.urls.urls import AV_BASE_URL
+from src.bot.settings import get_settings
 from src.utils.logger import get_logger
 
 logger = get_logger()
+settings = get_settings()
 
 
 class AvStatistic:
@@ -17,9 +15,12 @@ class AvStatistic:
         self.parms = {
             "headers": {**AV_HEADERS, "User-Agent": UserAgent().random}
         }
+        self._usd_url = settings.USD_URL
+        self._av_page_url = settings.AV_PAGE_URL
+        self._av_base_url = settings.AV_BASE_URL
 
     async def run_parser(self, brand: str, model: str, year: str):
-        url = f"{AV_BASE_URL}{brand}"
+        url = f"{self._av_base_url}{brand}"
         brands = await aiohttp_service.get_json_data(url=url, **self.parms)
         if brands:
             for brand in brands["seo"]["links"]:
@@ -32,7 +33,7 @@ class AvStatistic:
 
     async def get_generation(self, model: str, year: str):
         cars = []
-        url = f"{AV_BASE_URL}{model}"
+        url = f"{self._av_base_url}{model}"
         generations = await aiohttp_service.get_json_data(url=url, **self.parms)
         if not generations["seo"]["links"]:
             cars.append(await self.get_low_price(data=generations, year=year))
@@ -55,8 +56,10 @@ class AvStatistic:
         return cars
 
     async def get_low_price(self, data: str, year):
-        url = f"{AV_BASE_URL}{data}"
-        current_curse_json = await aiohttp_service.get_json_data(url=USD_URL)
+        url = f"{self._av_base_url}{data}"
+        current_curse_json = await aiohttp_service.get_json_data(
+            url=self._usd_url
+        )
         current_curse = float(current_curse_json["Cur_OfficialRate"])
         data = await aiohttp_service.get_json_data(url=url, **self.parms)
         price_min = (
@@ -120,7 +123,10 @@ class AvStatistic:
             if generation_id:
                 json_data["properties"][0]["value"][0].append(generation)
             data = await aiohttp_service.post_data(
-                url=AV_PAGE_URL, **self.parms, json_data=json_data, cookies=None
+                url=self._av_page_url,
+                **self.parms,
+                json_data=json_data,
+                cookies=None,
             )
 
             cars.append(data)
@@ -144,4 +150,3 @@ class AvStatistic:
 
 
 av_statistic = AvStatistic()
-asyncio.run(av_statistic.run_parser(brand="bmw", model="3-seriya", year="2020"))

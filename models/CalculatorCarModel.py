@@ -1,8 +1,8 @@
 from typing import Optional
-
 from pydantic import BaseModel
+from src.bot.settings import get_settings
 
-from docker.backend.config import EURO_USD, DECLARANTS, DISABLED_PERSON
+settings = get_settings()
 
 
 class CalculateCar(BaseModel):
@@ -11,13 +11,20 @@ class CalculateCar(BaseModel):
     auction_tax: int
     auction_button: int
     delivery: int
-    euro_usd: float = float(EURO_USD)
-    declorants: int = int(DECLARANTS)
-    disabled_person: int = int(DISABLED_PERSON)  # инвалид - пока не использую
+    euro_usd: float = settings.EURO_USD
+    declorants: int = settings.DECLARANTS
+    disabled_person: int = (
+        settings.DISABLED_PERSON
+    )  # инвалид - пока не использую
 
     def fixed_costs(self) -> float:
         return sum(
-            (self.auction_button, self.auction_tax, self.delivery, self.declorants)
+            (
+                self.auction_button,
+                self.auction_tax,
+                self.delivery,
+                self.declorants,
+            )
         )
 
     def common_total(self) -> Optional[float]:

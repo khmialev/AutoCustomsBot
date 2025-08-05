@@ -6,24 +6,24 @@ from parsers.heders.CopartHeaders import (
 from parsers.models.CarModel import AuctionCar
 from parsers.services.AioHttpService import aiohttp_service
 from parsers.services.PlayWrightService import playwright
-from parsers.urls.urls import (
-    COPART_MAIN_URL,
-    COPART_LOT_IMAGES_URL,
-    COPART_LOT_URL,
-)
+from src.bot.settings import get_settings
 from src.utils.logger import get_logger
 
 logger = get_logger()
+settings = get_settings()
 
 
 class CopartParser:
     def __init__(self):
         self.http_service = aiohttp_service
         self.ua = UserAgent()
+        self._copart_lot_image_url = settings.COPART_LOT_IMAGES_URL
+        self._copart_main_url = settings.COPART_MAIN_URL
+        self._copart_lot_url = settings.COPART_LOT_URL
 
     async def fetch_car_data(self, url: str, car_id: str):
 
-        referer = f"{COPART_MAIN_URL}lot/{car_id}"
+        referer = f"{self._copart_main_url}lot/{car_id}"
 
         # get image
         images_data = await self.get_copart_lot_images(
@@ -128,7 +128,7 @@ class CopartParser:
             "headers": COPART_IMAGE_HEADERS,
         }
         return await self.http_service.get_cookies(
-            url=COPART_MAIN_URL, **params
+            url=self._copart_main_url, **params
         )
 
     async def get_copart_lot_images(self, car_id, referer: str) -> dict:
@@ -142,14 +142,14 @@ class CopartParser:
         }
         cookies = await self.get_cookies_for_image()
         return await self.http_service.post_data(
-            url=COPART_LOT_IMAGES_URL,
+            url=self._copart_lot_image_url,
             **params,
             cookies=cookies,
             json_data=json_data,
         )
 
     async def get_copart_json(self, car_id: str) -> dict:
-        url = f"{COPART_LOT_URL}{car_id}"
+        url = f"{self._copart_lot_url}{car_id}"
         return await playwright.get_data_for_copart(url)
 
         # подумай почему не работает !!!!
