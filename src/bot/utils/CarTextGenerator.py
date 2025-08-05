@@ -24,6 +24,7 @@ from src.bot.constants.texts import (
     MULTIPLE_FOUND_ITEM,
     FEES_UP_TO_THREE_YEARS,
     FEES_THREE_TO_FIVE_YEARS,
+    WARNING_MESSAGE,
 )
 from src.bot.settings import get_settings
 
@@ -160,9 +161,9 @@ class CarTextGenerator:
             )
 
         if datetime.datetime.now().year - web_car.year == 2 and estimated_price:
-            lines.append(f"{WARNING} {WARNING_3_YEARS}")
+            lines.append(f"{WARNING} {WARNING_MESSAGE.format(WARNING_3_YEARS)}")
         if datetime.datetime.now().year - web_car.year == 5:
-            lines.append(f"{WARNING} {WARNING_5_YEARS}")
+            lines.append(f"{WARNING} {WARNING_MESSAGE.format(WARNING_5_YEARS)}")
 
         # поудмай над статистикой!!!
         if not av_analytics_car:

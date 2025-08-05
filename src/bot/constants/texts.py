@@ -52,8 +52,9 @@ CUSTOMS_TAX_HEADER = "<b>{header}</b>"
 CUSTOMS_TAX_ITEM = " {discounted:.2f} $ ({full:.2f} $)"
 CUSTOMS_TOTAL = "──────────\nИтог: <b>{discounted_total:.2f} $</b> (без льготы: {total:.2f} $)"
 
-WARNING_3_YEARS = "<b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «3–5 лет».</b>"
-WARNING_5_YEARS = "<b>Возможно, пока автомобиль будет в пути, он попадёт в категорию «СТАРШЕ 5 лет».</b>"
+WARNING_MESSAGE = "<b>Возможно, пока автомобиль будет в пути, он попадёт в категорию {years} </b>"
+WARNING_3_YEARS = "«3–5 лет»."
+WARNING_5_YEARS = "«СТАРШЕ 5 лет»."
 
 NOT_FOUND = (
     "<b>Бренд: {brand}, модель: {model}, год выпуска: {year}.</b> Нет в базе\n"
