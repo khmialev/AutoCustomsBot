@@ -8,7 +8,7 @@ from models.CalculatorCarModel import CalculateCar
 from parsers.AvAnalyticsParser import av_analytics
 from parsers.AvStatisticParser import av_statistic, AvStatistic
 from parsers.models.CarModel import AuctionCar, AvAnalyticsCar
-from src.bot.utils.TextGenerator import text_generator
+from src.bot.utils.CarTextGenerator import text_generator
 
 
 async def process_final_car_data(
@@ -60,6 +60,7 @@ async def process_final_car_data(
                 estimated_price=estimated_price,
                 msg_to_long=True,
                 av_analytics_car=av_analytics_car,
+                av_statistic_car=av_statistic_car,
             )
             await message.answer_photo(
                 photo=auction_car.image,
