@@ -2,7 +2,7 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InputMediaPhoto
 
-from calculation.calculator import CalculateLogic
+from calculation.Calculator import CalculateLogic
 from models.CalculatorCarModel import CalculateCar
 
 from parsers.AvAnalyticsParser import av_analytics

@@ -1,7 +1,7 @@
 import aiohttp
 
 from docker.backend.config import PROXY_URL
-from parsers.heders.copart_headers import COOKIES_FOR_JSON
+from parsers.heders.CopartHeaders import COOKIES_FOR_JSON
 from src.utils.logger import get_logger
 
 logger = get_logger()

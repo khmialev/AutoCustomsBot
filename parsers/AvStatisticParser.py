@@ -1,10 +1,9 @@
 import asyncio
 from datetime import datetime
 from fake_useragent import UserAgent
-from sqlalchemy.util import await_only
 
 from docker.backend.config import USD_URL, AV_PAGE_URL
-from parsers.heders.av_headers import AV_HEADERS
+from parsers.heders.AvHeaders import AV_HEADERS
 from parsers.models.CarModel import AvStatisticCar
 from parsers.services.AioHttpService import aiohttp_service
 from parsers.urls.urls import AV_BASE_URL

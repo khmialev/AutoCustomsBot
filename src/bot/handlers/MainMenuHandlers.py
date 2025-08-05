@@ -4,7 +4,7 @@ from aiogram.types import Message
 
 from src.bot.constants.emojis import LOCATION
 from src.bot.constants.texts import HANDLE_START_COMMAND
-from telegram_bot.keyboards.main_menu import main_menu_keyboard
+from telegram_bot.keyboards.MainMenu import main_menu_keyboard
 
 router = Router(name="main-menu-router")
 

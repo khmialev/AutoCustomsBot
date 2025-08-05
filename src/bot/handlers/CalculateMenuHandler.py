@@ -6,8 +6,8 @@ from src.bot.constants.texts import (
     SHOW_CALCULATE_MENU,
     HANDLE_START_COMMAND,
 )
-from telegram_bot.keyboards.calculate_menu import calculation_menu_keyboard
-from telegram_bot.keyboards.main_menu import main_menu_keyboard
+from telegram_bot.keyboards.CalculateMenu import calculation_menu_keyboard
+from telegram_bot.keyboards.MainMenu import main_menu_keyboard
 
 router = Router(name="calculate-menu-router")
 

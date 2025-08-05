@@ -6,8 +6,8 @@ from src.bot.constants.texts import (
     SHOW_TRACKING_MENU,
     HANDLE_START_COMMAND,
 )
-from telegram_bot.keyboards.main_menu import main_menu_keyboard
-from telegram_bot.keyboards.tracking_menu import tracking_menu_keyboard
+from telegram_bot.keyboards.MainMenu import main_menu_keyboard
+from telegram_bot.keyboards.TrackingMenu import tracking_menu_keyboard
 
 router = Router(name="tracking-menu-router")
 

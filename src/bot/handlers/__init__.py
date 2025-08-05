@@ -1,25 +1,25 @@
 from src.bot.handlers.debug import router as debug_router
-from src.bot.handlers.main_menu_handlers import router as main_menu_router
-from src.bot.handlers.help_handlers import router as help_router
-from src.bot.handlers.tracking_menu_handlers import (
+from src.bot.handlers.MainMenuHandlers import router as main_menu_router
+from src.bot.handlers.HelpHandlers import router as help_router
+from src.bot.handlers.TrackingMenuHandlers import (
     router as tracking_menu_router,
 )
-from src.bot.handlers.tracking_handlers.trakicng_list_handler import (
+from src.bot.handlers.tracking_handlers.TrackingListHandler import (
     router as tracking_list_router,
 )
-from src.bot.handlers.tracking_handlers.tracking_add_car_handler import (
+from src.bot.handlers.tracking_handlers.TrackingAddCarHandler import (
     router as tracking_add_router,
 )
-from src.bot.handlers.tracking_handlers.tracking_delete_car_handler import (
+from src.bot.handlers.tracking_handlers.TrackingDeleteCarHandler import (
     router as tracking_delete_car_router,
 )
-from src.bot.handlers.calculate_menu_handler import (
+from src.bot.handlers.CalculateMenuHandler import (
     router as calculate_menu_router,
 )
-from src.bot.handlers.calculate_handlers.set_params_handler import (
+from src.bot.handlers.calculate_handlers.SetParamsHandler import (
     router as calculate_set_fees_router,
 )
-from src.bot.handlers.calculate_handlers.calculate_car_handler import (
+from src.bot.handlers.calculate_handlers.CalculateCarHandler import (
     router as calculate_car_router,
 )
 

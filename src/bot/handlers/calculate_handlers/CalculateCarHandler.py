@@ -16,8 +16,8 @@ from src.bot.constants.texts import (
     INCORRECT_CAR_DATA,
     NOT_CAR_DATA,
 )
-from src.bot.states.calculation_customs_fee_states import CalculateBidCarsStates
-from src.bot.utils.calculate_final import process_final_car_data
+from src.bot.states.CalculationCustomsFeeStates import CalculateBidCarsStates
+from src.bot.utils.CalculateFinal import process_final_car_data
 
 router = Router(name="calculate-car-router")
 

@@ -1,6 +1,6 @@
 from fake_useragent import UserAgent
 
-from parsers.heders.copart_headers import (
+from parsers.heders.CopartHeaders import (
     COPART_IMAGE_HEADERS,
 )
 from parsers.models.CarModel import AuctionCar

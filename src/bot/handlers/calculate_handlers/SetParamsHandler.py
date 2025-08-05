@@ -17,9 +17,9 @@ from src.bot.constants.texts import (
     RECYCLING_FEE,
     AUCTION_PLAY_FEE,
 )
-from src.bot.states.calculation_customs_fee_states import CustomFeesStates
-from src.bot.utils.delete_previous_message import send_and_delete
-from telegram_bot.keyboards.calculate_menu import calculation_menu_keyboard
+from src.bot.states.CalculationCustomsFeeStates import CustomFeesStates
+from src.bot.utils.DeletePreviousMessage import send_and_delete
+from telegram_bot.keyboards.CalculateMenu import calculation_menu_keyboard
 
 router = Router(name="calculate-set-fees-router")
 
