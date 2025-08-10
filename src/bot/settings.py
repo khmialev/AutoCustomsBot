@@ -82,8 +82,16 @@ class Settings(BaseSettings):
     # Urls
     USD_URL: str | None = Field(default=None, description="Usd url")
 
-    IAAI_URL: str | None = Field(default=None, description="Iaai url")
+    IAAI_SEARCH_URL: str | None = Field(
+        default=None, description="Iaai search url"
+    )
     IMAGE_URL: str | None = Field(default=None, description="Iaai iamge url")
+    IAAI_IMAGE_URL: str | None = Field(
+        default=None, description="Iaai iamge url"
+    )
+    IAAI_BASE_CAR_URL: str | None = Field(
+        default=None, description="Iaai base car url"
+    )
 
     COPART_LOT_IMAGES_URL: str | None = Field(
         default=None, description="Copart image url"
