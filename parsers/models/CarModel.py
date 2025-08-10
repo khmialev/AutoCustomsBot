@@ -15,6 +15,7 @@ class AuctionCar(BaseModel):
     secondary_damage: str | None = None
     image: str | None = None
     images: list[str] = None
+    odometer: str = None
 
     def engine_type_for_statistic(self):
         if self.engine_type == "GAS":
