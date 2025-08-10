@@ -39,8 +39,8 @@ class CarTextGenerator:
         self,
         web_car: AuctionCar,
         car_calculate: CalculateCar,
-        av_analytics_car: list[AvAnalyticsCar],
-        av_statistic_car: list[AvStatisticCar],
+        av_analytics_car: list[AvAnalyticsCar] | None,
+        av_statistic_car: list[AvStatisticCar] | None,
         estimated_price: float = None,
         msg_to_long: bool = False,
     ):
