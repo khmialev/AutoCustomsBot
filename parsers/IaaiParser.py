@@ -14,7 +14,7 @@ class IaaiParser:
     ):
         car_id = url.split("/")[-2].split("-")[-1]
         search_url = settings.IAAI_SEARCH_URL.format(car_id=car_id)
-        html = await playwright.get_iaai_car_page(search_url)
+        html = await playwright.get_iaai_car_page(search_url, iaai=True)
         soup = BeautifulSoup(html, "html.parser")
 
         car_data = soup.find("script", {"id": "ProductDetailsVM"}).text

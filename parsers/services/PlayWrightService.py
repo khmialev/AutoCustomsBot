@@ -12,7 +12,7 @@ class PlayWrightManager:
         self.ua = UserAgent()
         self._proxy = settings.get_proxy_config()
 
-    async def _fetch_page(self, url: str) -> Page:
+    async def _fetch_page(self, url: str, iaai=False) -> Page:
         self._ua = self.ua.random
         self._playwright = await async_playwright().start()
         self._browser = await self._playwright.chromium.launch(
@@ -24,7 +24,8 @@ class PlayWrightManager:
         )
         page = await self._context.new_page()
         await page.goto(url, wait_until="domcontentloaded", timeout=60000)
-        await page.wait_for_load_state("networkidle")
+        if not iaai:
+            await page.wait_for_load_state("networkidle")
         return page
 
     async def _cleanup(self):
@@ -53,8 +54,8 @@ class PlayWrightManager:
         await self._cleanup()
         return json.loads(raw_body)
 
-    async def get_iaai_car_page(self, url):
-        page = await self._fetch_page(url)
+    async def get_iaai_car_page(self, url, iaai=False):
+        page = await self._fetch_page(url, iaai=iaai)
         html = await page.content()
         await self._cleanup()
         return html
