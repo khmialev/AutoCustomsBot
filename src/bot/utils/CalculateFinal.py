@@ -23,19 +23,24 @@ async def process_final_car_data(
         engine_volume=auction_car.engine_capacity,
         car_price=estimated_price,
     )
-    av_analytics_car: AvAnalyticsCar = await av_analytics.run(
-        brand=auction_car.brand,
-        model=auction_car.model,
-        year=auction_car.year,
-        engine_type=auction_car.engine_type,
-        engine_capacity=auction_car.engine_capacity,
-    )
-
-    av_statistic_car: AvStatistic = await av_statistic.run_parser(
-        brand=auction_car.brand,
-        model=auction_car.model,
-        year=auction_car.year,
-    )
+    try:
+        av_analytics_car: AvAnalyticsCar = await av_analytics.run(
+            brand=auction_car.brand,
+            model=auction_car.model,
+            year=auction_car.year,
+            engine_type=auction_car.engine_type,
+            engine_capacity=auction_car.engine_capacity,
+        )
+    except:
+        ...
+    try:
+        av_statistic_car: AvStatistic = await av_statistic.run_parser(
+            brand=auction_car.brand,
+            model=auction_car.model,
+            year=auction_car.year,
+        )
+    except:
+        ...
 
     text = await text_generator.get_text(
         web_car=auction_car,
