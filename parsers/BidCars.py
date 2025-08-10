@@ -1,4 +1,5 @@
 from parsers.CopartParser import copart_parser
+from parsers.IaaiParser import iaai_parser
 
 
 class BidCars:
@@ -6,10 +7,7 @@ class BidCars:
         car = None
         lot = url.split("/")[5].split("-")[0]
         if lot == "0":
-            payload = url.split("/")[5].split("-")[1]
-            # iaai
-            # iaai_url = await self.get_url_for_iaai(payload=payload)
-            # car = await IaaiParser(iaai_url=str(iaai_url)).get_data()
+            car = await iaai_parser.fetch_car_data(url=url)
 
         if lot == "1":
             # copart
