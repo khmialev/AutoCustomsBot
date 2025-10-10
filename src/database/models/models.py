@@ -1,4 +1,6 @@
+from datetime import datetime
 from decimal import Decimal
+from typing import Optional
 
 from sqlalchemy import (
     Boolean,
@@ -6,6 +8,9 @@ from sqlalchemy import (
     ForeignKey,
     Numeric,
     String,
+    Integer,
+    UniqueConstraint,
+    JSON,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
