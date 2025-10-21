@@ -1,7 +1,7 @@
 import datetime
 
 from calculation.BaseCalculator import BasicCalculate
-from models.CalculatorCarModel import CalculateCar
+from models.CalculatorCarModel import CalculateCar, CarTaxType
 
 
 class CalculateLogic(BasicCalculate):
@@ -49,6 +49,7 @@ class CalculateLogic(BasicCalculate):
                 auction_tax=self.auction_tax,
                 auction_button=self.auction_button,
                 delivery=self.delivery,
+                car_tax_type=CarTaxType.before_three_years
             )
         elif car_age < 5:
             car_tax = await self.between_three_five_years(engine_volume)
@@ -58,6 +59,7 @@ class CalculateLogic(BasicCalculate):
                 auction_tax=self.auction_tax,
                 auction_button=self.auction_button,
                 delivery=self.delivery,
+                car_tax_type=CarTaxType.between_three_five_years
             )
         elif car_age == 5:
             # Машина ровно 5 лет – считаем оба варианта
@@ -80,4 +82,5 @@ class CalculateLogic(BasicCalculate):
                 auction_tax=self.auction_tax,
                 auction_button=self.auction_button,
                 delivery=self.delivery,
+                car_tax_type=CarTaxType.after_five_years
             )
