@@ -1,9 +1,15 @@
+import enum
 from typing import Optional
 from pydantic import BaseModel
 from src.bot.settings import get_settings
 
 settings = get_settings()
 
+
+class CarTaxType(enum.Enum):
+    before_three_years = 0
+    between_three_five_years = 1
+    after_five_years = 2
 
 class CalculateCar(BaseModel):
     car_tax: Optional[float] = None
@@ -16,6 +22,7 @@ class CalculateCar(BaseModel):
     disabled_person: int = (
         settings.DISABLED_PERSON
     )  # инвалид - пока не использую
+    car_tax_type: Optional[CarTaxType] = None
 
     def fixed_costs(self) -> float:
         return sum(
