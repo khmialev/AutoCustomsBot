@@ -1,7 +1,7 @@
 from src.bot.handlers.debug import router as debug_router
-from src.bot.handlers.MainMenuHandlers import router as main_menu_router
-from src.bot.handlers.HelpHandlers import router as help_router
-from src.bot.handlers.TrackingMenuHandlers import (
+from src.bot.handlers.MenuHandlers.MainMenuHandlers import router as main_menu_router
+from src.bot.handlers.MenuHandlers.HelpHandlers import router as help_router
+from src.bot.handlers.MenuHandlers.TrackingMenuHandlers import (
     router as tracking_menu_router,
 )
 from src.bot.handlers.tracking_handlers.TrackingListHandler import (
@@ -13,7 +13,7 @@ from src.bot.handlers.tracking_handlers.TrackingAddCarHandler import (
 from src.bot.handlers.tracking_handlers.TrackingDeleteCarHandler import (
     router as tracking_delete_car_router,
 )
-from src.bot.handlers.CalculateMenuHandler import (
+from src.bot.handlers.MenuHandlers.CalculateMenuHandler import (
     router as calculate_menu_router,
 )
 from src.bot.handlers.calculate_handlers.SetParamsHandler import (
