@@ -1,5 +1,5 @@
 import datetime
-from models.CalculatorCarModel import CalculateCar
+from models.CalculatorCarModel import CalculateCar, CarTaxType
 from parsers.models.CarModel import AuctionCar, AvAnalyticsCar, AvStatisticCar
 from src.bot.constants.emojis import CAR, RAZOR, TRUCK, DOLLAR, WARNING, CROSS
 from src.bot.constants.texts import (
@@ -24,7 +24,7 @@ from src.bot.constants.texts import (
     MULTIPLE_FOUND_ITEM,
     FEES_UP_TO_THREE_YEARS,
     FEES_THREE_TO_FIVE_YEARS,
-    WARNING_MESSAGE,
+    WARNING_MESSAGE, FEES_OLDER_FIVE_YEARS,
 )
 from src.bot.settings import get_settings
 
@@ -127,12 +127,9 @@ class CarTextGenerator:
         # 6) Предполагаемая стоимость покупки (если есть)
         if estimated_price:
             lines.append(EXPECTED_PRICE.format(estimated_price=estimated_price))
-
-        header = (
-            FEES_UP_TO_THREE_YEARS
-            if estimated_price
-            else FEES_THREE_TO_FIVE_YEARS
-        )
+            header = FEES_UP_TO_THREE_YEARS
+        else:
+            header = FEES_THREE_TO_FIVE_YEARS if car_calculate.car_tax_type == CarTaxType.between_three_five_years else FEES_OLDER_FIVE_YEARS
 
         car_tax_value = (
             float(car_calculate.car_tax) * self.euro_usd
