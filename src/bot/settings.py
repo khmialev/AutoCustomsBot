@@ -102,7 +102,7 @@ class Settings(BaseSettings):
     COPART_LOT_URL: str | None = Field(
         default=None, description="Copart lot url"
     )
-    BIDCARS_TIPS: str | None = Field(default=None, description="Auction tax")
+    BIDCARS_TIPS: str | None = Field(default=None, description="Type of cars")
 
     AV_PAGE_URL: str | None = Field(default=None, description="Av page url")
     AV_BASE_URL: str | None = Field(default=None, description="Av base url")
