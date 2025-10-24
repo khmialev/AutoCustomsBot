@@ -16,12 +16,30 @@ class PlayWrightManager:
         self._ua = self.ua.random
         self._playwright = await async_playwright().start()
         self._browser = await self._playwright.chromium.launch(
-            headless=True, proxy=self._proxy
+            headless=True, proxy=self._proxy,
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-infobars",
+                "--window-size=1920,1080",
+                "--start-maximized",
+            ],
+
         )
         self._context = await self._browser.new_context(
             user_agent=self._ua,
             locale="en-US",
+            extra_http_headers={ # можно норм прокинуть
+                "Accept-Language": "en-US,en;q=0.9",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+            },
         )
+        await self._context.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+            Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+            Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+        """)
         page = await self._context.new_page()
         await page.goto(url, wait_until="domcontentloaded", timeout=60000)
         if not iaai:
