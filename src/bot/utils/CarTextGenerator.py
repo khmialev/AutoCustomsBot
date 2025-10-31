@@ -24,7 +24,8 @@ from src.bot.constants.texts import (
     MULTIPLE_FOUND_ITEM,
     FEES_UP_TO_THREE_YEARS,
     FEES_THREE_TO_FIVE_YEARS,
-    WARNING_MESSAGE, FEES_OLDER_FIVE_YEARS,
+    WARNING_MESSAGE,
+    FEES_OLDER_FIVE_YEARS,
 )
 from src.bot.settings import get_settings
 
@@ -52,12 +53,7 @@ class CarTextGenerator:
             lines.append(f"{CAR_SOURCE.format(url=web_car.url)}")
 
         # 2) Блок про автомобиль
-        text = f"{CAR} { CAR_INFO.format(
-                brand=web_car.brand.upper(),
-                model=web_car.model.upper(),
-                year=web_car.year,
-                engine=web_car.engine_capacity,
-            )}"
+        text = f"{CAR} {CAR_INFO.format(brand=web_car.brand.upper(),model=web_car.model.upper(),year=web_car.year,engine=web_car.engine_capacity)}"
         lines.append(text)
 
         if not msg_to_long:
@@ -79,11 +75,8 @@ class CarTextGenerator:
                 )
 
             if auction_lines:
-                text = f"{RAZOR} {CAR_AUCTION_INFO.format(
-                        buy_now="\n".join(auction_lines),
-                        current_bid="",
-                        sales_status="",
-                    )}"
+                buy_now_text = "\n".join(auction_lines)
+                text = f"{RAZOR} {CAR_AUCTION_INFO.format(buy_now=buy_now_text,current_bid='',sales_status='')}"
                 lines.append(text)
 
         if not msg_to_long:
@@ -129,7 +122,12 @@ class CarTextGenerator:
             lines.append(EXPECTED_PRICE.format(estimated_price=estimated_price))
             header = FEES_UP_TO_THREE_YEARS
         else:
-            header = FEES_THREE_TO_FIVE_YEARS if car_calculate.car_tax_type == CarTaxType.between_three_five_years else FEES_OLDER_FIVE_YEARS
+            header = (
+                FEES_THREE_TO_FIVE_YEARS
+                if car_calculate.car_tax_type
+                == CarTaxType.between_three_five_years
+                else FEES_OLDER_FIVE_YEARS
+            )
 
         car_tax_value = (
             float(car_calculate.car_tax) * self.euro_usd
