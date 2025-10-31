@@ -1,30 +1,42 @@
 import json
 from datetime import datetime
 
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import (
+    ReplyKeyboardMarkup,
+    KeyboardButton,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
+
 
 def load_cars():
     with open("./cars_structured.json", "r", encoding="utf-8") as file:
         cars = json.load(file)
         return cars
 
+
 cars = load_cars()
+
 
 async def tracking_menu_keyboard():
     return ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text="🚗 Запустить")],
-            [KeyboardButton(text="💥 Остановить.")],
-            [KeyboardButton(text="📋 Список отслеживания")],
-            [KeyboardButton(text="➕ Добавить авто")],
-            [KeyboardButton(text="❌ Удалить авто")],
-            [KeyboardButton(text="💳 Изменить тариф (Отслеживание)")],
+            [
+                KeyboardButton(text="🚗 Запустить"),
+                KeyboardButton(text="💥 Остановить."),
+            ],
+            [
+                KeyboardButton(text="➕ Добавить авто"),
+                KeyboardButton(text="❌ Удалить авто"),
+            ],
+            [
+                KeyboardButton(text="📋 Список отслеживания"),
+                KeyboardButton(text="💳 Изменить тариф (Отслеживание)"),
+            ],
             [KeyboardButton(text="⬅️ Назад в меню")],
         ],
         resize_keyboard=True,
     )
-
-
 
 
 async def create_brands_keyboard_bidcars():
@@ -40,6 +52,7 @@ async def create_brands_keyboard_bidcars():
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
+
 async def create_models_keyboards_bidcars(brand: str):
     buttons = []
 
@@ -49,7 +62,7 @@ async def create_models_keyboards_bidcars(brand: str):
                 [
                     InlineKeyboardButton(
                         text=car.get("model").upper(),
-                        callback_data=f"model:{car.get("model")}",
+                        callback_data=f"model:{car.get('model')}",
                     )
                 ]
             )
@@ -75,7 +88,11 @@ async def create_years_keyboard_bidcars(model: str):
                         f"{gen.get('min_year', '0')}:{gen.get('max_year', '0')}"
                     )
                     buttons.append(
-                        [InlineKeyboardButton(text=text, callback_data=callback)]
+                        [
+                            InlineKeyboardButton(
+                                text=text, callback_data=callback
+                            )
+                        ]
                     )
             else:
                 year_count = car.get("year_count", [])
