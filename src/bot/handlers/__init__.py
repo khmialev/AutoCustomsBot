@@ -31,7 +31,9 @@ from src.bot.handlers.CalculateHandlers.SetParamsHandler import (
 from src.bot.handlers.CalculateHandlers.CalculateCarHandler import (
     router as calculate_car_router,
 )
-
+from src.bot.handlers.TrackingHandlers.TrackingAddCarHandler import (
+    router as tracking_add_car_router,
+)
 
 all_routers = (
     debug_router,
@@ -45,4 +47,5 @@ all_routers = (
     calculate_car_router,
     tracking_stop_router,
     tracking_start_router,
+    tracking_add_car_router,
 )
