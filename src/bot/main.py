@@ -30,8 +30,9 @@ async def main():
             engine=engine,
         )
         await health_checker.run_all()
-    except ConnectionError:
+    except ConnectionError as e:
         logger.critical("Startup health checks failed. Bot is shutting down.")
+        logger.critical(e)
         await engine.dispose()
         return
 
