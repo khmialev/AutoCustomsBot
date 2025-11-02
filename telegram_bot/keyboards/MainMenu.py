@@ -12,7 +12,6 @@ async def main_menu_keyboard():
                 KeyboardButton(text="📦 Мои подписки"),
                 KeyboardButton(text="ℹ️ Помощь"),
             ],
-            [],
         ],
         resize_keyboard=True,
     )
