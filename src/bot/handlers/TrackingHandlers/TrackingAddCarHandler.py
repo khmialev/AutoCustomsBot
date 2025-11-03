@@ -4,6 +4,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from src.bot.states.TrackingStates import TrackingBidCars
+from src.database.repositories.manager import OrmRepositoryManager
+from src.database.repositories.repository_manager import RepositoryManager
 from telegram_bot.keyboards.MainMenu import main_menu_keyboard
 from telegram_bot.keyboards.TrackingMenu import (
     create_brands_keyboard_bidcars,
@@ -15,7 +17,35 @@ router = Router(name="tracking-add-router")
 
 
 @router.message(F.text == "➕ Добавить авто")
-async def add_car(message: Message, state: FSMContext):
+async def add_car(
+    message: Message, state: FSMContext, repo_manager: RepositoryManager
+):
+    MAX_TRACKINGS_PER_USER = 1
+    user = await repo_manager.users.get_by_user_id(user_id=message.from_user.id)
+    current_count = await repo_manager.tracking.count_by_user_id(
+        user_id=user.id
+    )
+
+    if current_count >= MAX_TRACKINGS_PER_USER:
+        user_trackings = await repo_manager.tracking.get_all_by_user_id(
+            user_id=user.id
+        )
+
+        tracks_list = "\n".join(
+            [
+                f"📌 {t.brand} {t.model} ({t.year_from}-{t.year_to})"
+                for t in user_trackings
+            ]
+        )
+
+        await message.answer(
+            f"⚠️ Превышен лимит отслеживаний ({MAX_TRACKINGS_PER_USER})!\n\n"
+            f"Вот твои активные:\n{tracks_list}\n\n"
+            f"❌ Удали одно из них, чтобы добавить новое.",
+            parse_mode="HTML",
+        )
+        return
+
     await message.answer(
         "Введите данные автомобиля для добавления...",
     )
@@ -86,13 +116,13 @@ async def process_year_input(call: CallbackQuery, state: FSMContext):
 
 @router.callback_query(StateFilter(TrackingBidCars.waiting_for_generation))
 async def process_add_to_db_params_for_tracking(
-    call: CallbackQuery, state: FSMContext
+    call: CallbackQuery, state: FSMContext, repo_manager: RepositoryManager
 ):
     data = await state.get_data()
     brand = data["brand"]
     model = data["model"]
-    year_from = call.data.split("-")[0]
-    year_to = call.data.split("-")[1]
+    year_from = call.data.split("-")[0].strip()
+    year_to = call.data.split("-")[1].strip()
     msg_id = data["tracking_message_id"]
 
     if "all" in call.data:
@@ -100,7 +130,15 @@ async def process_add_to_db_params_for_tracking(
         year_from = data[-2]
         year_to = data[-1]
 
-    # тут надо в бд добавить запись
+    user = await repo_manager.users.get_by_user_id(user_id=call.from_user.id)
+    await repo_manager.tracking.create(
+        user_id=user.id,
+        brand=brand,
+        model=model,
+        year_from=int(year_from),
+        year_to=int(year_to),
+        is_active=True,
+    )
 
     text = (
         f"🎯 <b>Добавлено отслеживание!</b>\n"
