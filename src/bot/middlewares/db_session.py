@@ -4,7 +4,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from src.database.repositories.manager import OrmRepositoryManager
+from src.database.repositories.repository_manager import RepositoryManager
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -23,6 +23,6 @@ class DatabaseMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         async with self.session_factory() as session:
-            async with OrmRepositoryManager(session=session) as manager:
+            async with RepositoryManager(session=session) as manager:
                 data["repo_manager"] = manager
                 return await handler(event, data)
