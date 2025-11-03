@@ -11,6 +11,7 @@ from sqlalchemy import (
     Integer,
     UniqueConstraint,
     JSON,
+    BigInteger,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -59,7 +60,9 @@ class BrandModel(BaseIdModel):
 class UserModel(BaseIdModel):
     __tablename__ = "users"
 
-    user_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        BigInteger, unique=True, nullable=False
+    )
     username: Mapped[Optional[str]] = mapped_column(String)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_subscribed: Mapped[bool] = mapped_column(Boolean, default=False)
