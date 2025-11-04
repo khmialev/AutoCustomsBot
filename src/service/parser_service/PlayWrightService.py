@@ -1,5 +1,5 @@
 import json
-from playwright.async_api import async_playwright, Page
+from playwright.async_api import async_playwright, Page, ProxySettings
 from fake_useragent import UserAgent
 
 from src.app.settings import get_settings
@@ -10,9 +10,10 @@ settings = get_settings()
 class PlayWrightManager:
     def __init__(self):
         self.ua = UserAgent()
-        self._proxy = settings.get_proxy_config()
+        self._proxy = settings.get_proxy_settings()
 
     async def _fetch_page(self, url: str, iaai=False) -> Page:
+
         self._ua = self.ua.random
         self._playwright = await async_playwright().start()
         self._browser = await self._playwright.chromium.launch(
