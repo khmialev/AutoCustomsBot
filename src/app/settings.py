@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from playwright.async_api import ProxySettings
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -46,6 +47,19 @@ class Settings(BaseSettings):
     PROXY_PORT: str | None = Field(default=None, description="Proxy port")
     PROXY_USER: str | None = Field(default=None, description="Proxy user")
     PROXY_PASS: str | None = Field(default=None, description="Proxy password ")
+
+    def get_proxy_settings(self):
+        if all(
+            [self.PROXY_HOST, self.PROXY_PORT, self.PROXY_USER, self.PROXY_PASS]
+        ):
+            return ProxySettings(
+                {
+                    "server": f"https://{self.PROXY_HOST}:{self.PROXY_PORT}",
+                    "username": self.PROXY_USER,
+                    "password": self.PROXY_PASS,
+                }
+            )
+        return None
 
     def get_proxy_url(self) -> str | None:
         if all(
