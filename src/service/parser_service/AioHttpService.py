@@ -63,7 +63,12 @@ class AiohttpService:
         session = await self.get_session()
         try:
             async with session.post(
-                url, ssl=False, **kwargs, cookies=cookies, json=json_data
+                url,
+                ssl=False,
+                **kwargs,
+                cookies=cookies,
+                json=json_data,
+                proxy=self._proxy,
             ) as response:
                 logger.info(f"Aiohttp POST {url} -> {response.status}")
                 return await response.json()
