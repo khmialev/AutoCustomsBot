@@ -1,7 +1,10 @@
 import datetime
 
 from src.service.calculation.BaseCalculator import BasicCalculate
-from src.service.calculation.models.CalculatorCarModel import CalculateCar
+from src.service.calculation.models.CalculatorCarModel import (
+    CalculateCar,
+    CarTaxType,
+)
 
 
 class CalculateLogic(BasicCalculate):
