@@ -32,7 +32,7 @@ async def process_final_car_data(
             engine_capacity=auction_car.engine_capacity,
         )
     except:
-        ...
+        av_analytics_car = None
     try:
         av_statistic_car: AvStatistic = await av_statistic.run_parser(
             brand=auction_car.brand,
@@ -40,14 +40,14 @@ async def process_final_car_data(
             year=auction_car.year,
         )
     except:
-        ...
+        av_statistic_car = None
 
     text = await text_generator.get_text(
         web_car=auction_car,
         car_calculate=car_calculate,
         estimated_price=estimated_price,
-        av_analytics_car=av_analytics_car,
-        av_statistic_car=av_statistic_car,
+        av_analytics_car=av_analytics_car or None,
+        av_statistic_car=av_statistic_car or None,
     )
 
     if auction_car.images:
