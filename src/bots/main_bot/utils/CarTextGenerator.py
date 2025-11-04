@@ -37,7 +37,10 @@ from src.parsers.models.CarModel import (
     AvAnalyticsCar,
     AvStatisticCar,
 )
-from src.service.calculation.models.CalculatorCarModel import CalculateCar
+from src.service.calculation.models.CalculatorCarModel import (
+    CalculateCar,
+    CarTaxType,
+)
 
 settings = get_settings()
 
